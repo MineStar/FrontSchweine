@@ -18,20 +18,23 @@
 
 package de.minestar.vincicode.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.server.PathEntity;
+import net.minecraft.server.PathPoint;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.PluginManager;
 
 import de.minestar.minestarlibrary.AbstractCore;
-import de.minestar.minestarlibrary.bookapi.MinestarBook;
 public class VinciCodeCore extends AbstractCore implements Listener {
 
     public static final String NAME = "VinciCode";
+
+    private CraftLivingEntity entity = null;
 
     public VinciCodeCore() {
         super(NAME);
@@ -44,12 +47,22 @@ public class VinciCodeCore extends AbstractCore implements Listener {
     }
 
     @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        List<String> pages = new ArrayList<String>();
-        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
-        pages.add(ChatColor.RED + "Seite 2");
-        pages.add(ChatColor.RED + "Seite 3");
-        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
-        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
+    public void onPlayerRespawn(PlayerInteractEvent event) {
+//        List<String> pages = new ArrayList<String>();
+//        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
+//        pages.add(ChatColor.RED + "Seite 2");
+//        pages.add(ChatColor.RED + "Seite 3");
+//        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
+//        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
+
+        Location loc = event.getPlayer().getLocation();
+
+        entity = (CraftLivingEntity) loc.getWorld().spawnEntity(loc.getBlock().getRelative(10, 0, 0).getLocation(), EntityType.PIG);
+        PathPoint[] path = new PathPoint[1];
+        path[0] = new PathPoint(loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ());
+
+        PathEntity pe = new PathEntity(path);
+        entity.getHandle().getNavigation().a(pe, 0.5f);
+        // entity.getHandle().getNavigation().a(-10, 0, 0, 0.5f);
     }
 }
