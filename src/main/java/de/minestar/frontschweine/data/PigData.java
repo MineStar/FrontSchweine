@@ -30,7 +30,6 @@ import org.bukkit.craftbukkit.entity.CraftPig;
 public class PigData {
     private final String playerName;
     private final CraftPig pig;
-    private float speed = 0.4f;
     private Vec3D waypointVec3D;
     private PathEntity pathEntity;
     private int currentWaypointIndex;
@@ -49,11 +48,6 @@ public class PigData {
 
     public UUID getUUID() {
         return this.pig.getUniqueId();
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-        this.refreshPath();
     }
 
     public void start() {
