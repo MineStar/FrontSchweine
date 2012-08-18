@@ -19,20 +19,14 @@
 package de.minestar.vincicode.core;
 
 import java.util.HashMap;
-import java.util.List;
-
-import net.minecraft.server.PathEntity;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.PluginManager;
 
 import com.bukkit.gemo.utils.BlockUtils;
@@ -40,12 +34,14 @@ import com.bukkit.gemo.utils.BlockUtils;
 import de.minestar.minestarlibrary.AbstractCore;
 public class VinciCodeCore extends AbstractCore implements Listener {
 
+    public static VinciCodeCore INSTANCE;
     public static final String NAME = "VinciCode";
 
-    public HashMap<String, CraftPig> pigMap = new HashMap<String, CraftPig>();
+    public HashMap<String, PigData> pigMap = new HashMap<String, PigData>();
 
     public VinciCodeCore() {
         super(NAME);
+        INSTANCE = this;
     }
 
     @Override
@@ -64,28 +60,12 @@ public class VinciCodeCore extends AbstractCore implements Listener {
             }
 
             // try to get the pig
-            CraftPig pig = pigMap.get(event.getPlayer().getName());
-            if (pig == null) {
+            PigData pigData = pigMap.get(event.getPlayer().getName());
+            if (pigData == null) {
                 return;
             }
 
-            // get the saved target-waypoint
-            if (!pig.hasMetadata("wp_target")) {
-                return;
-            }
-
-            // create the location
-            List<MetadataValue> values = pig.getMetadata("wp_target");
-            Location t = BlockUtils.LocationFromString(values.get(0).asString());
-
-            // check if the goal is reached => eject the player, clear the map
-            // and remove the pig
-            if (BlockUtils.LocationEquals(t, event.getTo())) {
-                event.getPlayer().getVehicle().eject();
-                this.pigMap.remove(event.getPlayer().getName());
-                pig.remove();
-                return;
-            }
+            pigData.update(event.getTo());
         }
     }
 
@@ -101,26 +81,26 @@ public class VinciCodeCore extends AbstractCore implements Listener {
         if (event.getPlayer().isSneaking() && !event.getPlayer().isInsideVehicle()) {
             Location loc = event.getPlayer().getLocation();
 
+            Path path = new Path();
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, -20).getLocation()));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, -20).getLocation()));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, +20).getLocation()));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, +20).getLocation()));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-19, 0, -20).getLocation()));
+            path.addWaypoint(new Waypoint(loc));
+
             // create pig
-            CraftPig pigEntity = (CraftPig) loc.getWorld().spawnEntity(loc.getBlock().getRelative(1, 0, 1).getLocation(), EntityType.PIG);
-
-            // find the path
-            Location target = loc.getBlock().getRelative(20, 0, 20).getLocation().clone();
-            PathEntity pe = ((CraftWorld) loc.getWorld()).getHandle().a(pigEntity.getHandle(), target.getBlockX(), loc.getBlockY(), target.getBlockZ(), 150, true, true, true, true);
-
-            // set the path & speed
-            pigEntity.getHandle().getNavigation().a(pe, 0.5f);
+            CraftPig pigEntity = (CraftPig) loc.getWorld().spawnEntity(loc.getBlock().getRelative(0, 0, 0).getLocation(), EntityType.PIG);
 
             // player should "enter the pig"
             pigEntity.setSaddle(true);
             pigEntity.setPassenger(event.getPlayer());
 
-            // set the target-waypoint
-            pigEntity.setMetadata("wp_target", new FixedMetadataValue(this, BlockUtils.LocationToString(target)));
+            PigData pigData = new PigData(pigEntity, path);
+            pigData.start();
 
             // save the pig to a map
-            pigMap.put(event.getPlayer().getName(), pigEntity);
+            pigMap.put(event.getPlayer().getName(), pigData);
         }
     }
-
 }
