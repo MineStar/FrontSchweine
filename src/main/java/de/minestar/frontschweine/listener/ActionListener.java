@@ -84,7 +84,8 @@ public class ActionListener implements Listener {
 
         // exit the pig and remove the pig
         this.pigHandler.removePig(pigData);
-        pigData.exit();
+        pigData.exit(false);
+        event.getVehicle().remove();
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -105,16 +106,12 @@ public class ActionListener implements Listener {
 
     private boolean handleDamage(Entity entity) {
         // only pigs are affected
-        if (!entity.equals(EntityType.PIG)) {
+        if (!entity.getType().equals(EntityType.PIG)) {
             return false;
         }
 
-        // no damage on handled pigs
-        if (this.pigHandler.hasPigDataByUUID(entity)) {
-            return true;
-        }
-
-        return false;
+        // no damage on handled pigsS
+        return this.pigHandler.hasPigDataByUUID(entity);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -132,7 +129,7 @@ public class ActionListener implements Listener {
             PigData pigData = this.pigHandler.getPigDataByPlayer(player);
             // exit the pig and remove the pig
             this.pigHandler.removePig(pigData);
-            pigData.exit();
+            pigData.exit(true);
         }
     }
 
@@ -142,7 +139,7 @@ public class ActionListener implements Listener {
             PigData pigData = this.pigHandler.getPigDataByPlayer(event.getEntity());
             // exit the pig and remove the pig
             this.pigHandler.removePig(pigData);
-            pigData.exit();
+            pigData.exit(true);
         }
     }
 
@@ -173,5 +170,4 @@ public class ActionListener implements Listener {
             this.pigHandler.addPigData(pigData);
         }
     }
-
 }

@@ -60,7 +60,7 @@ public class PigData {
 
     public void update(Location location) {
         if (this.currentWaypoint == null) {
-            this.exit();
+            this.exit(true);
             return;
         }
 
@@ -81,6 +81,8 @@ public class PigData {
     }
 
     private boolean isSameGoal(PathEntity pigPathEntity) {
+        if (pigPathEntity == null || this.waypointVec3D == null)
+            return false;
         return pigPathEntity.b(this.waypointVec3D);
     }
 
@@ -98,7 +100,7 @@ public class PigData {
 
     private void refreshPath() {
         if (this.currentWaypoint == null) {
-            this.exit();
+            this.exit(true);
         }
 
         // find the path
@@ -116,7 +118,7 @@ public class PigData {
             // reached the final waypoint
             System.out.println("final waypoint reached");
             System.out.println("----------------------");
-            this.exit();
+            this.exit(true);
         } else {
             System.out.println("waypoint " + (this.currentWaypointIndex + 1) + " of " + this.path.getSize() + " reached");
             // reached a normal waypoint
@@ -126,11 +128,12 @@ public class PigData {
         }
     }
 
-    public void exit() {
+    public void exit(boolean ejectPlayer) {
         // eject the player and remove the pig
-        this.pig.eject();
+        if (ejectPlayer && this.pig.getPassenger() != null) {
+            this.pig.eject();
+        }
         this.pig.setSaddle(false);
-        this.pig.remove();
 
         // clean up
         this.cleanUp();
