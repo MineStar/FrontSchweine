@@ -20,11 +20,16 @@ package de.minestar.frontschweine.handler;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import de.minestar.minestarlibrary.database.AbstractMySQLHandler;
 import de.minestar.minestarlibrary.database.DatabaseUtils;
 
 public class DatabaseHandler extends AbstractMySQLHandler {
+
+    PreparedStatement addLine, loadLines, deleteLine;
+    PreparedStatement addWaypoint, loadWaypoints, deleteWaypoint, deleteWaypointsForLine;
+    PreparedStatement addActivator, loadActivators, deleteActivator, deleteActivatorForLine;
 
     public DatabaseHandler(String pluginName, File SQLConfigFile) {
         super(pluginName, SQLConfigFile);
@@ -37,6 +42,21 @@ public class DatabaseHandler extends AbstractMySQLHandler {
 
     @Override
     protected void createStatements(String pluginName, Connection con) throws Exception {
-        // TODO Auto-generated method stub
+        // LINES
+        this.addLine = con.prepareStatement("INSERT INTO `lines` (`name`) VALUES (?)");
+        this.deleteLine = con.prepareStatement("DELETE FROM `lines` WHERE `name`=?");
+        this.loadLines = con.prepareStatement("SELECT * FROM `lines` ORDER BY `ID` ASC");
+
+        // WAYPOINTS
+        this.addWaypoint = con.prepareStatement("INSERT INTO `waypoints` (`lineID`, `x`, `y`, `z`, `world`, `speed`) VALUES (?, ?, ?, ?, ?, ?)");
+        this.deleteWaypoint = con.prepareStatement("DELETE FROM `waypoints` WHERE `x`=? AND `y`=? AND `z`=? AND `world`=?");
+        this.loadWaypoints = con.prepareStatement("SELECT * FROM `waypoints` ORDER BY `ID` ASC");
+        this.deleteWaypointsForLine = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=?");
+
+        // ACTIVATOR
+        this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?)");
+        this.loadActivators = con.prepareStatement("DELETE FROM `activator` WHERE `x`=? AND `y`=? AND `z`=? AND `world`=?");
+        this.deleteActivator = con.prepareStatement("SELECT * FROM `activator` ORDER BY `ID` ASC");
+        this.deleteActivatorForLine = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=?");
     }
 }

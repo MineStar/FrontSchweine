@@ -18,8 +18,11 @@
 
 package de.minestar.frontschweine.core;
 
+import java.io.File;
+
 import org.bukkit.plugin.PluginManager;
 
+import de.minestar.frontschweine.handler.DatabaseHandler;
 import de.minestar.frontschweine.handler.PigHandler;
 import de.minestar.frontschweine.listener.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
@@ -28,8 +31,9 @@ public class FrontschweineCore extends AbstractCore {
     public static FrontschweineCore INSTANCE;
     public static final String NAME = "Frontschweine";
 
-    private ActionListener actionListener;
-    private PigHandler pigHandler;
+    public static ActionListener actionListener;
+    public static PigHandler pigHandler;
+    public static DatabaseHandler databaseHandler;
 
     public FrontschweineCore() {
         super(NAME);
@@ -38,19 +42,20 @@ public class FrontschweineCore extends AbstractCore {
 
     @Override
     protected boolean createManager() {
-        this.pigHandler = new PigHandler();
+        pigHandler = new PigHandler();
+        databaseHandler = new DatabaseHandler(FrontschweineCore.NAME, new File(this.getDataFolder(), "mysql.properties"));
         return true;
     }
 
     @Override
     protected boolean createListener() {
-        this.actionListener = new ActionListener(this.pigHandler);
+        actionListener = new ActionListener(pigHandler);
         return true;
     }
 
     @Override
     protected boolean registerEvents(PluginManager pm) {
-        pm.registerEvents(this.actionListener, this);
+        pm.registerEvents(actionListener, this);
         return true;
     }
 }
