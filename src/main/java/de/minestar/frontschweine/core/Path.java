@@ -16,7 +16,7 @@
  * along with VinciCode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.minestar.vincicode.core;
+package de.minestar.frontschweine.core;
 
 import java.util.ArrayList;
 

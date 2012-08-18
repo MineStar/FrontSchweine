@@ -1,4 +1,4 @@
-package de.minestar.vincicode.core;
+package de.minestar.frontschweine.core;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-name: VinciCode
-main: de.minestar.vincicode.core.VinciCodeCore
+name: Frontschweine
+main: de.minestar.frontschweine.core.FrontschweineCore
 version: ${pom.version}
 depend: [MineStarLibrary]

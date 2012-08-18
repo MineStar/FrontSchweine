@@ -16,7 +16,7 @@
  * along with VinciCode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.minestar.vincicode.core;
+package de.minestar.frontschweine.core;
 
 import java.util.HashMap;
 
@@ -32,14 +32,14 @@ import org.bukkit.plugin.PluginManager;
 import com.bukkit.gemo.utils.BlockUtils;
 
 import de.minestar.minestarlibrary.AbstractCore;
-public class VinciCodeCore extends AbstractCore implements Listener {
+public class FrontschweineCore extends AbstractCore implements Listener {
 
-    public static VinciCodeCore INSTANCE;
-    public static final String NAME = "VinciCode";
+    public static FrontschweineCore INSTANCE;
+    public static final String NAME = "Frontschweine";
 
     public HashMap<String, PigData> pigMap = new HashMap<String, PigData>();
 
-    public VinciCodeCore() {
+    public FrontschweineCore() {
         super(NAME);
         INSTANCE = this;
     }
@@ -71,13 +71,6 @@ public class VinciCodeCore extends AbstractCore implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-//        List<String> pages = new ArrayList<String>();
-//        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
-//        pages.add(ChatColor.RED + "Seite 2");
-//        pages.add(ChatColor.RED + "Seite 3");
-//        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
-//        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
-
         if (event.getPlayer().isSneaking() && !event.getPlayer().isInsideVehicle()) {
             Location loc = event.getPlayer().getLocation();
 
