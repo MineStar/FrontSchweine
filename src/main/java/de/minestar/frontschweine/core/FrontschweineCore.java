@@ -18,26 +18,16 @@
 
 package de.minestar.frontschweine.core;
 
-import java.util.HashMap;
-
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftPig;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.PluginManager;
 
-import com.bukkit.gemo.utils.BlockUtils;
-
+import de.minestar.frontschweine.data.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
-public class FrontschweineCore extends AbstractCore implements Listener {
+public class FrontschweineCore extends AbstractCore {
 
     public static FrontschweineCore INSTANCE;
     public static final String NAME = "Frontschweine";
 
-    public HashMap<String, PigData> pigMap = new HashMap<String, PigData>();
+    private ActionListener actionListener;
 
     public FrontschweineCore() {
         super(NAME);
@@ -45,55 +35,15 @@ public class FrontschweineCore extends AbstractCore implements Listener {
     }
 
     @Override
-    protected boolean registerEvents(PluginManager pm) {
-        pm.registerEvents(this, this);
+    protected boolean createListener() {
+        actionListener = new ActionListener();
         return true;
     }
 
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        // only if the player is riding a pig
-        if (event.getPlayer().isInsideVehicle() && event.getPlayer().getVehicle().getType().equals(EntityType.PIG)) {
-            // only check if the block is different
-            if (BlockUtils.LocationEquals(event.getTo(), event.getFrom())) {
-                return;
-            }
-
-            // try to get the pig
-            PigData pigData = pigMap.get(event.getPlayer().getName());
-            if (pigData == null) {
-                return;
-            }
-
-            pigData.update(event.getTo());
-        }
+    @Override
+    protected boolean registerEvents(PluginManager pm) {
+        pm.registerEvents(actionListener, this);
+        return true;
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getPlayer().isSneaking() && !event.getPlayer().isInsideVehicle()) {
-            Location loc = event.getPlayer().getLocation();
-
-            Path path = new Path();
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, -20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, -20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, +20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, +20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-19, 0, -20).getLocation()));
-            path.addWaypoint(new Waypoint(loc));
-
-            // create pig
-            CraftPig pigEntity = (CraftPig) loc.getWorld().spawnEntity(loc.getBlock().getRelative(0, 0, 0).getLocation(), EntityType.PIG);
-
-            // player should "enter the pig"
-            pigEntity.setSaddle(true);
-            pigEntity.setPassenger(event.getPlayer());
-
-            PigData pigData = new PigData(pigEntity, path);
-            pigData.start();
-
-            // save the pig to a map
-            pigMap.put(event.getPlayer().getName(), pigData);
-        }
-    }
 }

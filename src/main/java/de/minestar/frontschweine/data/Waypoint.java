@@ -1,4 +1,4 @@
-package de.minestar.frontschweine.core;
+package de.minestar.frontschweine.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
