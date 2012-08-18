@@ -55,7 +55,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         this.deleteWaypointsForLine = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=?");
 
         // ACTIVATOR
-        this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?)");
+        this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?, ?)");
         this.deleteActivator = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
         this.loadActivators = con.prepareStatement("SELECT `*` FROM `activator`  WHERE lineID`=? ORDER BY `ID` ASC");
         this.deleteActivatorForLine = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=?");
@@ -143,10 +143,11 @@ public class DatabaseHandler extends AbstractMySQLHandler {
     public boolean addActivator(int lineID, Waypoint waypoint) {
         try {
             this.addActivator.setInt(1, lineID);
-            this.addActivator.setInt(2, waypoint.getX());
-            this.addActivator.setInt(3, waypoint.getY());
-            this.addActivator.setInt(4, waypoint.getZ());
-            this.addActivator.setString(5, waypoint.getWorldName());
+            this.addActivator.setInt(2, waypoint.getID());
+            this.addActivator.setInt(3, waypoint.getX());
+            this.addActivator.setInt(4, waypoint.getY());
+            this.addActivator.setInt(5, waypoint.getZ());
+            this.addActivator.setString(6, waypoint.getWorldName());
             this.addActivator.executeUpdate();
             return true;
         } catch (Exception e) {

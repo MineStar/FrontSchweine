@@ -27,6 +27,7 @@ ENGINE = InnoDB;
 CREATE  TABLE IF NOT EXISTS `activator` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `lineID` INT NOT NULL ,
+  `waypointID` INT NOT NULL ,
   `x` INT NOT NULL ,
   `y` INT NOT NULL ,
   `z` INT NOT NULL ,

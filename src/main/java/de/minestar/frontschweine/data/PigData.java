@@ -51,11 +51,16 @@ public class PigData {
     }
 
     public void start() {
-        if (this.path.getSize() > 0) {
-            this.currentWaypointIndex = 0;
-            this.currentWaypoint = this.path.getWaypoint(this.currentWaypointIndex);
-            this.refreshPath();
+        this.setWaypoint(0);
+    }
+
+    public void setWaypoint(int index) {
+        if (index < 0 || index > (this.path.getSize() - 1)) {
+            return;
         }
+        this.currentWaypointIndex = index;
+        this.currentWaypoint = this.path.getWaypoint(this.currentWaypointIndex);
+        this.refreshPath();
     }
 
     public void update(Location location) {
@@ -122,9 +127,7 @@ public class PigData {
         } else {
             System.out.println("waypoint " + (this.currentWaypointIndex + 1) + " of " + this.path.getSize() + " reached");
             // reached a normal waypoint
-            this.currentWaypointIndex++;
-            this.currentWaypoint = this.path.getWaypoint(this.currentWaypointIndex);
-            this.refreshPath();
+            this.setWaypoint(this.currentWaypointIndex + 1);
         }
     }
 

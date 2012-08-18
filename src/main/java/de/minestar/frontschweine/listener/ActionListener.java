@@ -146,28 +146,28 @@ public class ActionListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getPlayer().isSneaking() && !event.getPlayer().isInsideVehicle() && !this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
-            Location loc = event.getPlayer().getLocation();
+//            Location loc = event.getPlayer().getLocation();
 
-            Path path = new Path();
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, -20).getLocation(), 0.5f));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, -20).getLocation(), 0.5f));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, +20).getLocation(), 0.5f));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, +20).getLocation(), 0.5f));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-19, 0, -20).getLocation(), 0.5f));
-            path.addWaypoint(new Waypoint(loc, 0.5f));
+//            Path path = new Path();
+//            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, -20).getLocation(), 0.5f));
+//            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, -20).getLocation(), 0.5f));
+//            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, +20).getLocation(), 0.5f));
+//            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, +20).getLocation(), 0.5f));
+//            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-19, 0, -20).getLocation(), 0.5f));
+//            path.addWaypoint(new Waypoint(loc, 0.5f));
 
             // create pig
-            CraftPig pigEntity = (CraftPig) loc.getWorld().spawnEntity(loc.getBlock().getRelative(0, 0, 0).getLocation(), EntityType.PIG);
+//            CraftPig pigEntity = (CraftPig) loc.getWorld().spawnEntity(loc.getBlock().getRelative(0, 0, 0).getLocation(), EntityType.PIG);
 
             // player should "enter the pig"
-            pigEntity.setSaddle(true);
-            pigEntity.setPassenger(event.getPlayer());
+//            pigEntity.setSaddle(true);
+//            pigEntity.setPassenger(event.getPlayer());
 
-            PigData pigData = new PigData(event.getPlayer().getName(), pigEntity, path);
-            pigData.start();
+//            PigData pigData = new PigData(event.getPlayer().getName(), pigEntity, path);
+//            pigData.start();
 
             // save the pig to a map
-            this.pigHandler.addPigData(pigData);
+//            this.pigHandler.addPigData(pigData);
         }
     }
 }

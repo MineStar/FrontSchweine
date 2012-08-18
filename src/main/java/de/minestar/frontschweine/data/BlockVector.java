@@ -5,11 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 
-public class Waypoint implements Comparable<Waypoint> {
-    private int ID;
+public class BlockVector implements Comparable<BlockVector> {
     private int x, y, z;
     private String worldName;
-    private float speed;
     private int hashCode = Integer.MIN_VALUE;
     private Location location = null;
 
@@ -25,8 +23,8 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public Waypoint(int ID, String worldName, int x, int y, int z, float speed) {
-        this.update(ID, worldName, x, y, z, speed);
+    public BlockVector(String worldName, int x, int y, int z) {
+        this.update(worldName, x, y, z);
     }
 
     /**
@@ -35,8 +33,8 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            location
      */
-    public Waypoint(int ID, Location location, float speed) {
-        this.update(ID, location, speed);
+    public BlockVector(Location location) {
+        this.update(location);
     }
 
     /**
@@ -51,14 +49,12 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public void update(int ID, String worldName, int x, int y, int z, float speed) {
-        this.ID = ID;
+    public void update(String worldName, int x, int y, int z) {
         this.worldName = worldName;
         this.x = x;
         this.y = y;
         this.z = z;
         this.location = null;
-        this.speed = speed;
         this.hashCode = Integer.MIN_VALUE;
     }
 
@@ -67,9 +63,9 @@ public class Waypoint implements Comparable<Waypoint> {
      * 
      * @param location
      */
-    public void update(int ID, Location location, float speed) {
-        this.update(ID, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), speed);
-        this.location = location.clone();
+    public void update(Location location) {
+        this.update(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        this.location = location;
     }
 
     /**
@@ -96,14 +92,6 @@ public class Waypoint implements Comparable<Waypoint> {
             result = result.getBlock().getRelative(face).getLocation();
         }
         return result;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public float getSpeed() {
-        return speed;
     }
 
     /**
@@ -139,10 +127,23 @@ public class Waypoint implements Comparable<Waypoint> {
         if (obj == this)
             return true;
 
-        if (obj instanceof Waypoint) {
-            return this.equals((Waypoint) obj);
+        if (obj instanceof BlockVector) {
+            return this.equals((BlockVector) obj);
         }
         return false;
+    }
+
+    /**
+     * Returns a new BlockVector that is relative to this BlockVector with the
+     * given positions
+     * 
+     * @param x
+     * @param y
+     * @param z
+     * @return the relative BlockVector
+     */
+    public BlockVector getRelative(int x, int y, int z) {
+        return new BlockVector(this.worldName, this.x + x, this.y + y, this.z + z);
     }
 
     /**
@@ -151,7 +152,7 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param other
      * @return <b>true</b> if the vectors are equal, otherwise <b>false</b>
      */
-    public boolean equals(Waypoint other) {
+    public boolean equals(BlockVector other) {
         return (this.x == other.x && this.y == other.y && this.z == other.z && this.worldName.equalsIgnoreCase(other.worldName));
     }
 
@@ -164,17 +165,17 @@ public class Waypoint implements Comparable<Waypoint> {
     }
 
     @Override
-    public Waypoint clone() {
-        return new Waypoint(this.ID, this.worldName, this.x, this.y, this.z, this.speed);
+    public BlockVector clone() {
+        return new BlockVector(this.worldName, this.x, this.y, this.z);
     }
 
     @Override
     public String toString() {
-        return "Waypoint={ " + this.worldName + " ; " + this.x + " ; " + this.y + " ; " + this.z + " }";
+        return "BlockVector={ " + this.worldName + " ; " + this.x + " ; " + this.y + " ; " + this.z + " }";
     }
 
     @Override
-    public int compareTo(Waypoint other) {
+    public int compareTo(BlockVector other) {
         return this.hashCode() - other.hashCode();
     }
 }
