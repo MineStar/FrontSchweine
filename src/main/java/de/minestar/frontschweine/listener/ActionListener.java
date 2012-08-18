@@ -20,11 +20,14 @@ package de.minestar.frontschweine.listener;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPig;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -85,17 +88,33 @@ public class ActionListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onEntityDamage(EntityDamageEvent event) {
-        // only pigs are affected
-        if (!event.getEntityType().equals(EntityType.PIG)) {
-            return;
-        }
-
-        // no damage on handled pigs
-        if (this.pigHandler.hasPigDataByUUID(event.getEntity())) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (this.handleDamage(event.getEntity())) {
             event.setDamage(0);
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (this.handleDamage(event.getEntity())) {
+            event.setDamage(0);
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean handleDamage(Entity entity) {
+        // only pigs are affected
+        if (!entity.equals(EntityType.PIG)) {
+            return false;
+        }
+
+        // no damage on handled pigs
+        if (this.pigHandler.hasPigDataByUUID(entity)) {
+            return true;
+        }
+
+        return false;
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -103,7 +122,7 @@ public class ActionListener implements Listener {
         this.handleDisconnect(event.getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         this.handleDisconnect(event.getPlayer());
     }
@@ -111,6 +130,16 @@ public class ActionListener implements Listener {
     private void handleDisconnect(Player player) {
         if (this.pigHandler.hasPigDataByPlayer(player)) {
             PigData pigData = this.pigHandler.getPigDataByPlayer(player);
+            // exit the pig and remove the pig
+            this.pigHandler.removePig(pigData);
+            pigData.exit();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (this.pigHandler.hasPigDataByPlayer(event.getEntity())) {
+            PigData pigData = this.pigHandler.getPigDataByPlayer(event.getEntity());
             // exit the pig and remove the pig
             this.pigHandler.removePig(pigData);
             pigData.exit();
