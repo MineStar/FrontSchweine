@@ -20,7 +20,7 @@ package de.minestar.frontschweine.core;
 
 import org.bukkit.plugin.PluginManager;
 
-import de.minestar.frontschweine.data.ActionListener;
+import de.minestar.frontschweine.listener.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
 public class FrontschweineCore extends AbstractCore {
 

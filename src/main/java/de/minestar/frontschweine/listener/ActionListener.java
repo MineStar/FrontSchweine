@@ -16,7 +16,7 @@
  * along with Frontschweine.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.minestar.frontschweine.data;
+package de.minestar.frontschweine.listener;
 
 import java.util.HashMap;
 
@@ -29,6 +29,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.bukkit.gemo.utils.BlockUtils;
+
+import de.minestar.frontschweine.data.Path;
+import de.minestar.frontschweine.data.PigData;
+import de.minestar.frontschweine.data.Waypoint;
 
 public class ActionListener implements Listener {
 
