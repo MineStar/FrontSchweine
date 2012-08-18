@@ -26,6 +26,7 @@ import de.minestar.frontschweine.handler.DatabaseHandler;
 import de.minestar.frontschweine.handler.PigHandler;
 import de.minestar.frontschweine.listener.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
+
 public class FrontschweineCore extends AbstractCore {
 
     public static FrontschweineCore INSTANCE;
