@@ -18,27 +18,35 @@
 
 package de.minestar.frontschweine.listener;
 
-import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import com.bukkit.gemo.utils.BlockUtils;
 
 import de.minestar.frontschweine.data.Path;
 import de.minestar.frontschweine.data.PigData;
 import de.minestar.frontschweine.data.Waypoint;
+import de.minestar.frontschweine.handler.PigHandler;
 
 public class ActionListener implements Listener {
 
-    public HashMap<String, PigData> pigMap = new HashMap<String, PigData>();
+    private PigHandler pigHandler;
 
-    @EventHandler
+    public ActionListener(PigHandler pigHandler) {
+        this.pigHandler = pigHandler;
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         // only if the player is riding a pig
         if (event.getPlayer().isInsideVehicle() && event.getPlayer().getVehicle().getType().equals(EntityType.PIG)) {
@@ -48,18 +56,70 @@ public class ActionListener implements Listener {
             }
 
             // try to get the pig
-            PigData pigData = pigMap.get(event.getPlayer().getName());
-            if (pigData == null) {
+            PigData pigData = this.pigHandler.getPigDataByPlayer(event.getPlayer());
+            if (pigData == null || !pigData.getUUID().equals(event.getPlayer().getVehicle().getUniqueId())) {
                 return;
             }
 
+            // update the pig
             pigData.update(event.getTo());
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
+    public void onVehicleExit(VehicleExitEvent event) {
+        // ONLY PIGS & PLAYERS ARE ENABLED
+        if (!event.getVehicle().getType().equals(EntityType.PIG) || !event.getExited().getType().equals(EntityType.PLAYER)) {
+            return;
+        }
+
+        // try to get the pig
+        PigData pigData = this.pigHandler.getPigDataByUUID(event.getVehicle());
+        if (pigData == null || !pigData.getUUID().equals(event.getVehicle().getUniqueId())) {
+            return;
+        }
+
+        // exit the pig and remove the pig
+        this.pigHandler.removePig(pigData);
+        pigData.exit();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
+        // only pigs are affected
+        if (!event.getEntityType().equals(EntityType.PIG)) {
+            return;
+        }
+
+        // no damage on handled pigs
+        if (this.pigHandler.hasPigDataByUUID(event.getEntity())) {
+            event.setDamage(0);
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerKick(PlayerKickEvent event) {
+        this.handleDisconnect(event.getPlayer());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDisconnect(PlayerQuitEvent event) {
+        this.handleDisconnect(event.getPlayer());
+    }
+
+    private void handleDisconnect(Player player) {
+        if (this.pigHandler.hasPigDataByPlayer(player)) {
+            PigData pigData = this.pigHandler.getPigDataByPlayer(player);
+            // exit the pig and remove the pig
+            this.pigHandler.removePig(pigData);
+            pigData.exit();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getPlayer().isSneaking() && !event.getPlayer().isInsideVehicle()) {
+        if (event.getPlayer().isSneaking() && !event.getPlayer().isInsideVehicle() && !this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
             Location loc = event.getPlayer().getLocation();
 
             Path path = new Path();
@@ -77,11 +137,11 @@ public class ActionListener implements Listener {
             pigEntity.setSaddle(true);
             pigEntity.setPassenger(event.getPlayer());
 
-            PigData pigData = new PigData(pigEntity, path);
+            PigData pigData = new PigData(event.getPlayer().getName(), pigEntity, path);
             pigData.start();
 
             // save the pig to a map
-            pigMap.put(event.getPlayer().getName(), pigData);
+            this.pigHandler.addPigData(pigData);
         }
     }
 

@@ -18,6 +18,8 @@
 
 package de.minestar.frontschweine.data;
 
+import java.util.UUID;
+
 import net.minecraft.server.PathEntity;
 import net.minecraft.server.Vec3D;
 
@@ -26,6 +28,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPig;
 
 public class PigData {
+    private final String playerName;
     private final CraftPig pig;
     private float speed = 0.4f;
     private Vec3D waypointVec3D;
@@ -34,9 +37,18 @@ public class PigData {
     private Waypoint currentWaypoint;
     private Path path;
 
-    public PigData(CraftPig pig, Path path) {
+    public PigData(String playerName, CraftPig pig, Path path) {
+        this.playerName = playerName;
         this.pig = pig;
         this.setPath(path);
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public UUID getUUID() {
+        return this.pig.getUniqueId();
     }
 
     public void setSpeed(float speed) {
@@ -54,7 +66,7 @@ public class PigData {
 
     public void update(Location location) {
         if (this.currentWaypoint == null) {
-            this.onGoalReached();
+            this.exit();
             return;
         }
 
@@ -92,7 +104,7 @@ public class PigData {
 
     private void refreshPath() {
         if (this.currentWaypoint == null) {
-            this.onGoalReached();
+            this.exit();
         }
 
         // find the path
@@ -110,7 +122,7 @@ public class PigData {
             // reached the final waypoint
             System.out.println("final waypoint reached");
             System.out.println("----------------------");
-            this.onGoalReached();
+            this.exit();
         } else {
             System.out.println("waypoint " + (this.currentWaypointIndex + 1) + " of " + this.path.getSize() + " reached");
             // reached a normal waypoint
@@ -120,7 +132,7 @@ public class PigData {
         }
     }
 
-    private void onGoalReached() {
+    public void exit() {
         // eject the player and remove the pig
         this.pig.eject();
         this.pig.setSaddle(false);

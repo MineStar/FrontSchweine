@@ -20,6 +20,7 @@ package de.minestar.frontschweine.core;
 
 import org.bukkit.plugin.PluginManager;
 
+import de.minestar.frontschweine.handler.PigHandler;
 import de.minestar.frontschweine.listener.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
 public class FrontschweineCore extends AbstractCore {
@@ -28,6 +29,7 @@ public class FrontschweineCore extends AbstractCore {
     public static final String NAME = "Frontschweine";
 
     private ActionListener actionListener;
+    private PigHandler pigHandler;
 
     public FrontschweineCore() {
         super(NAME);
@@ -35,15 +37,20 @@ public class FrontschweineCore extends AbstractCore {
     }
 
     @Override
+    protected boolean createManager() {
+        this.pigHandler = new PigHandler();
+        return true;
+    }
+
+    @Override
     protected boolean createListener() {
-        actionListener = new ActionListener();
+        this.actionListener = new ActionListener(this.pigHandler);
         return true;
     }
 
     @Override
     protected boolean registerEvents(PluginManager pm) {
-        pm.registerEvents(actionListener, this);
+        pm.registerEvents(this.actionListener, this);
         return true;
     }
-
 }
