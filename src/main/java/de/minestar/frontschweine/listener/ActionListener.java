@@ -152,12 +152,12 @@ public class ActionListener implements Listener {
             Location loc = event.getPlayer().getLocation();
 
             Path path = new Path();
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, -20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, -20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, +20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, +20).getLocation()));
-            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-19, 0, -20).getLocation()));
-            path.addWaypoint(new Waypoint(loc));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, -20).getLocation(), 0.5f));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, -20).getLocation(), 0.5f));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(+20, 0, +20).getLocation(), 0.5f));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-20, 0, +20).getLocation(), 0.5f));
+            path.addWaypoint(new Waypoint(loc.getBlock().getRelative(-19, 0, -20).getLocation(), 0.5f));
+            path.addWaypoint(new Waypoint(loc, 0.5f));
 
             // create pig
             CraftPig pigEntity = (CraftPig) loc.getWorld().spawnEntity(loc.getBlock().getRelative(0, 0, 0).getLocation(), EntityType.PIG);

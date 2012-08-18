@@ -8,6 +8,7 @@ import org.bukkit.block.BlockFace;
 public class Waypoint implements Comparable<Waypoint> {
     private int x, y, z;
     private String worldName;
+    private float speed;
     private int hashCode = Integer.MIN_VALUE;
     private Location location = null;
 
@@ -23,8 +24,8 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public Waypoint(String worldName, int x, int y, int z) {
-        this.update(worldName, x, y, z);
+    public Waypoint(String worldName, int x, int y, int z, float speed) {
+        this.update(worldName, x, y, z, speed);
     }
 
     /**
@@ -33,8 +34,8 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            location
      */
-    public Waypoint(Location location) {
-        this.update(location);
+    public Waypoint(Location location, float speed) {
+        this.update(location, speed);
     }
 
     /**
@@ -49,12 +50,13 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public void update(String worldName, int x, int y, int z) {
+    public void update(String worldName, int x, int y, int z, float speed) {
         this.worldName = worldName;
         this.x = x;
         this.y = y;
         this.z = z;
         this.location = null;
+        this.speed = speed;
         this.hashCode = Integer.MIN_VALUE;
     }
 
@@ -63,8 +65,8 @@ public class Waypoint implements Comparable<Waypoint> {
      * 
      * @param location
      */
-    public void update(Location location) {
-        this.update(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    public void update(Location location, float speed) {
+        this.update(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), speed);
         this.location = location.clone();
     }
 
@@ -92,6 +94,10 @@ public class Waypoint implements Comparable<Waypoint> {
             result = result.getBlock().getRelative(face).getLocation();
         }
         return result;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     /**
@@ -143,7 +149,7 @@ public class Waypoint implements Comparable<Waypoint> {
      * @return the relative BlockVector
      */
     public Waypoint getRelative(int x, int y, int z) {
-        return new Waypoint(this.worldName, this.x + x, this.y + y, this.z + z);
+        return new Waypoint(this.worldName, this.x + x, this.y + y, this.z + z, 0.4f);
     }
 
     /**
@@ -166,7 +172,7 @@ public class Waypoint implements Comparable<Waypoint> {
 
     @Override
     public Waypoint clone() {
-        return new Waypoint(this.worldName, this.x, this.y, this.z);
+        return new Waypoint(this.worldName, this.x, this.y, this.z, this.speed);
     }
 
     @Override

@@ -114,7 +114,7 @@ public class PigData {
         this.waypointVec3D = Vec3D.a(this.currentWaypoint.getX(), this.currentWaypoint.getY(), this.currentWaypoint.getZ());
 
         // set the path & speed
-        this.pig.getHandle().getNavigation().a(pathEntity, speed);
+        this.pig.getHandle().getNavigation().a(pathEntity, this.currentWaypoint.getSpeed());
     }
 
     private void onWaypointReached() {
