@@ -22,8 +22,12 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import de.minestar.frontschweine.data.Activator;
 import de.minestar.frontschweine.data.BlockVector;
+import de.minestar.frontschweine.data.Line;
 import de.minestar.frontschweine.data.Path;
 import de.minestar.frontschweine.data.Waypoint;
 import de.minestar.minestarlibrary.database.AbstractMySQLHandler;
@@ -93,6 +97,35 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         }
     }
 
+    public ArrayList<Line> loadLines() {
+        try {
+            ArrayList<Line> list = new ArrayList<Line>();
+            ResultSet results = this.loadLines.executeQuery();
+            while (results != null && results.next()) {
+                Line line = new Line(results.getInt("ID"), results.getString("name"));
+                // get waypoints
+                Path path = this.loadWaypointsForLine(line.getLineID());
+                if (path == null) {
+                    continue;
+                }
+                line.setPath(path);
+
+                // get activators
+                HashMap<BlockVector, Activator> activators = this.loadActivatorsForLine(line.getLineID(), path.getWaypoints());
+                if (activators == null) {
+                    continue;
+                }
+                line.setActivators(activators);
+
+                // add line
+                list.add(line);
+            }
+            return list;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     // ////////////////////////////////////////////////////
     //
     // WAYPOINTS
@@ -127,11 +160,11 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         }
     }
 
-    public Path loadWaypointsForLine(int lineID) {
+    private Path loadWaypointsForLine(int lineID) {
         try {
             Path path = new Path();
-            this.loadActivatorsForLine.setInt(1, lineID);
-            ResultSet results = this.loadActivatorsForLine.executeQuery();
+            this.loadWaypointsForLine.setInt(1, lineID);
+            ResultSet results = this.loadWaypointsForLine.executeQuery();
             int index = 0;
             while (results != null && results.next()) {
                 BlockVector vector = new BlockVector(results.getString("world"), results.getInt("x"), results.getInt("y"), results.getInt("z"));
@@ -203,4 +236,35 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         }
     }
 
+    private HashMap<BlockVector, Activator> loadActivatorsForLine(int lineID, ArrayList<Waypoint> waypoints) {
+        try {
+            HashMap<BlockVector, Activator> list = new HashMap<BlockVector, Activator>();
+            this.loadActivatorsForLine.setInt(1, lineID);
+            ResultSet results = this.loadActivatorsForLine.executeQuery();
+            while (results != null && results.next()) {
+                BlockVector vector = new BlockVector(results.getString("world"), results.getInt("x"), results.getInt("y"), results.getInt("z"));
+                if (vector.getLocation() == null) {
+                    continue;
+                }
+                Waypoint waypoint = this.getWaypointByID(waypoints, results.getInt("waypointID"));
+                if (waypoint == null) {
+                    continue;
+                }
+                Activator activator = new Activator(results.getInt("ID"), results.getInt("lineID"), waypoint, vector);
+                list.put(vector, activator);
+            }
+            return list;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Waypoint getWaypointByID(ArrayList<Waypoint> waypoints, int ID) {
+        for (Waypoint waypoint : waypoints) {
+            if (waypoint.getID() == ID) {
+                return waypoint;
+            }
+        }
+        return null;
+    }
 }

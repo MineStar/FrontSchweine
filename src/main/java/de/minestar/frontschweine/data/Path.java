@@ -27,6 +27,10 @@ public class Path {
         return this.waypoints.size();
     }
 
+    public ArrayList<Waypoint> getWaypoints() {
+        return waypoints;
+    }
+
     public Waypoint getWaypoint(int index) {
         return this.waypoints.get(index);
     }

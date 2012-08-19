@@ -24,15 +24,21 @@ import java.util.HashMap;
 public class Line {
 
     private final int lineID;
-    private final HashMap<BlockVector, Activator> activators = new HashMap<BlockVector, Activator>();
-    private final Path path = new Path();
+    private final String name;
+    private HashMap<BlockVector, Activator> activators = new HashMap<BlockVector, Activator>();
+    private Path path = new Path();
 
-    public Line(int lineID) {
+    public Line(int lineID, String name) {
         this.lineID = lineID;
+        this.name = name;
     }
 
     public int getLineID() {
         return lineID;
+    }
+
+    public String getName() {
+        return name;
     }
 
     // /////////////////////////////////////////
@@ -57,6 +63,10 @@ public class Line {
         return this.activators.containsKey(vector);
     }
 
+    public void setActivators(HashMap<BlockVector, Activator> activators) {
+        this.activators = activators;
+    }
+
     // /////////////////////////////////////////
     //
     // PATH
@@ -65,6 +75,10 @@ public class Line {
 
     public Path getPath() {
         return path;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
     }
 
     public int getPathSize() {
