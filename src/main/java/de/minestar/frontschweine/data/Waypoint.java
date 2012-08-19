@@ -6,6 +6,7 @@ public class Waypoint implements Comparable<Waypoint> {
     private int ID;
     private BlockVector vector;
     private float speed;
+    private int placeInLine = 0;
 
     /**
      * Constructor
@@ -19,10 +20,11 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public Waypoint(int ID, BlockVector vector, float speed) {
+    public Waypoint(int ID, BlockVector vector, float speed, int placeInLine) {
         this.ID = ID;
         this.vector = vector;
         this.speed = speed;
+        this.placeInLine = placeInLine;
     }
 
     /**
@@ -31,35 +33,17 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            location
      */
-    public Waypoint(int ID, Location location, float speed) {
-        this(ID, new BlockVector(location), speed);
+    public Waypoint(int ID, Location location, float speed, int placeInLine) {
+        this(ID, new BlockVector(location), speed, placeInLine);
     }
 
     /**
-     * Update the BlockVector
+     * Get the place in line
      * 
-     * @param the
-     *            worldName
-     * @param the
-     *            x
-     * @param the
-     *            y
-     * @param the
-     *            z
+     * @return the place in line
      */
-    public void update(int ID, BlockVector vector, float speed) {
-        this.ID = ID;
-        this.vector = vector;
-        this.speed = speed;
-    }
-
-    /**
-     * Update the BlockVector
-     * 
-     * @param location
-     */
-    public void update(int ID, Location location, float speed) {
-        this.update(ID, new BlockVector(location), speed);
+    public int getPlaceInLine() {
+        return placeInLine;
     }
 
     /**
@@ -71,10 +55,20 @@ public class Waypoint implements Comparable<Waypoint> {
         return this.vector.getLocation();
     }
 
+    /**
+     * Get the ID
+     * 
+     * @return the ID
+     */
     public int getID() {
         return ID;
     }
 
+    /**
+     * Get the speed
+     * 
+     * @return the speed
+     */
     public float getSpeed() {
         return speed;
     }
@@ -107,6 +101,11 @@ public class Waypoint implements Comparable<Waypoint> {
         return this.vector.getWorldName();
     }
 
+    /**
+     * Get the BlockVector
+     * 
+     * @return the BlockVector
+     */
     public BlockVector getVector() {
         return vector;
     }
@@ -135,11 +134,6 @@ public class Waypoint implements Comparable<Waypoint> {
     @Override
     public int hashCode() {
         return this.vector.hashCode();
-    }
-
-    @Override
-    public Waypoint clone() {
-        return new Waypoint(this.ID, this.vector, this.speed);
     }
 
     @Override
