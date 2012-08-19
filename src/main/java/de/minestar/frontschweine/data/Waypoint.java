@@ -1,17 +1,11 @@
 package de.minestar.frontschweine.data;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 
 public class Waypoint implements Comparable<Waypoint> {
     private int ID;
-    private int x, y, z;
-    private String worldName;
+    private BlockVector vector;
     private float speed;
-    private int hashCode = Integer.MIN_VALUE;
-    private Location location = null;
 
     /**
      * Constructor
@@ -25,8 +19,10 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public Waypoint(int ID, String worldName, int x, int y, int z, float speed) {
-        this.update(ID, worldName, x, y, z, speed);
+    public Waypoint(int ID, BlockVector vector, float speed) {
+        this.ID = ID;
+        this.vector = vector;
+        this.speed = speed;
     }
 
     /**
@@ -36,7 +32,7 @@ public class Waypoint implements Comparable<Waypoint> {
      *            location
      */
     public Waypoint(int ID, Location location, float speed) {
-        this.update(ID, location, speed);
+        this(ID, new BlockVector(location), speed);
     }
 
     /**
@@ -51,15 +47,10 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public void update(int ID, String worldName, int x, int y, int z, float speed) {
+    public void update(int ID, BlockVector vector, float speed) {
         this.ID = ID;
-        this.worldName = worldName;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.location = null;
+        this.vector = vector;
         this.speed = speed;
-        this.hashCode = Integer.MIN_VALUE;
     }
 
     /**
@@ -68,8 +59,7 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param location
      */
     public void update(int ID, Location location, float speed) {
-        this.update(ID, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), speed);
-        this.location = location.clone();
+        this.update(ID, new BlockVector(location), speed);
     }
 
     /**
@@ -78,24 +68,7 @@ public class Waypoint implements Comparable<Waypoint> {
      * @return the location
      */
     public Location getLocation() {
-        if (this.location == null) {
-            World world = Bukkit.getWorld(this.worldName);
-            if (world != null) {
-                this.location = new Location(world, this.x, this.y, this.z);
-            }
-        }
-        return this.location;
-    }
-
-    /**
-     * @return the location relative to this one
-     */
-    public Location getRelativeLocation(BlockFace face) {
-        Location result = this.getLocation();
-        if (result != null) {
-            result = result.getBlock().getRelative(face).getLocation();
-        }
-        return result;
+        return this.vector.getLocation();
     }
 
     public int getID() {
@@ -110,28 +83,32 @@ public class Waypoint implements Comparable<Waypoint> {
      * @return the x
      */
     public int getX() {
-        return x;
+        return this.vector.getX();
     }
 
     /**
      * @return the y
      */
     public int getY() {
-        return y;
+        return this.vector.getY();
     }
 
     /**
      * @return the z
      */
     public int getZ() {
-        return z;
+        return this.vector.getZ();
     }
 
     /**
      * @return the worldName
      */
     public String getWorldName() {
-        return worldName;
+        return this.vector.getWorldName();
+    }
+
+    public BlockVector getVector() {
+        return vector;
     }
 
     @Override
@@ -152,25 +129,22 @@ public class Waypoint implements Comparable<Waypoint> {
      * @return <b>true</b> if the vectors are equal, otherwise <b>false</b>
      */
     public boolean equals(Waypoint other) {
-        return (this.x == other.x && this.y == other.y && this.z == other.z && this.worldName.equalsIgnoreCase(other.worldName));
+        return this.vector.equals(other.getVector());
     }
 
     @Override
     public int hashCode() {
-        if (this.hashCode == Integer.MIN_VALUE) {
-            this.hashCode = this.toString().hashCode();
-        }
-        return this.hashCode;
+        return this.vector.hashCode();
     }
 
     @Override
     public Waypoint clone() {
-        return new Waypoint(this.ID, this.worldName, this.x, this.y, this.z, this.speed);
+        return new Waypoint(this.ID, this.vector, this.speed);
     }
 
     @Override
     public String toString() {
-        return "Waypoint={ " + this.worldName + " ; " + this.x + " ; " + this.y + " ; " + this.z + " }";
+        return "Waypoint={ ID : " + this.ID + " ; " + this.vector.toString() + " ; Speed : " + this.speed + " }";
     }
 
     @Override
