@@ -21,7 +21,10 @@ package de.minestar.frontschweine.handler;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
+import de.minestar.frontschweine.data.BlockVector;
+import de.minestar.frontschweine.data.Path;
 import de.minestar.frontschweine.data.Waypoint;
 import de.minestar.minestarlibrary.database.AbstractMySQLHandler;
 import de.minestar.minestarlibrary.database.DatabaseUtils;
@@ -29,8 +32,8 @@ import de.minestar.minestarlibrary.database.DatabaseUtils;
 public class DatabaseHandler extends AbstractMySQLHandler {
 
     PreparedStatement addLine, loadLines, deleteLine;
-    PreparedStatement addWaypoint, loadWaypoints, deleteWaypoint, deleteWaypointsForLine;
-    PreparedStatement addActivator, loadActivators, deleteActivator, deleteActivatorForLine;
+    PreparedStatement addWaypoint, loadWaypointsForLine, deleteWaypoint, deleteWaypointsForLine;
+    PreparedStatement addActivator, loadActivatorsForLine, deleteActivator, deleteActivatorForLine;
 
     public DatabaseHandler(String pluginName, File SQLConfigFile) {
         super(pluginName, SQLConfigFile);
@@ -51,13 +54,13 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         // WAYPOINTS
         this.addWaypoint = con.prepareStatement("INSERT INTO `waypoints` (`lineID`, `x`, `y`, `z`, `world`, `speed`) VALUES (?, ?, ?, ?, ?, ?)");
         this.deleteWaypoint = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
-        this.loadWaypoints = con.prepareStatement("SELECT `*` FROM `waypoints` WHERE lineID`=? ORDER BY `ID` ASC");
+        this.loadWaypointsForLine = con.prepareStatement("SELECT `*` FROM `waypoints` WHERE lineID`=? ORDER BY `ID` ASC");
         this.deleteWaypointsForLine = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=?");
 
         // ACTIVATOR
         this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?, ?)");
         this.deleteActivator = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
-        this.loadActivators = con.prepareStatement("SELECT `*` FROM `activator`  WHERE lineID`=? ORDER BY `ID` ASC");
+        this.loadActivatorsForLine = con.prepareStatement("SELECT `*` FROM `activator`  WHERE lineID`=? ORDER BY `ID` ASC");
         this.deleteActivatorForLine = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=?");
     }
 
@@ -121,6 +124,27 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public Path loadWaypointsForLine(int lineID) {
+        try {
+            Path path = new Path();
+            this.loadActivatorsForLine.setInt(1, lineID);
+            ResultSet results = this.loadActivatorsForLine.executeQuery();
+            int index = 0;
+            while (results != null && results.next()) {
+                BlockVector vector = new BlockVector(results.getString("world"), results.getInt("x"), results.getInt("y"), results.getInt("z"));
+                if (vector.getLocation() == null) {
+                    continue;
+                }
+                Waypoint waypoint = new Waypoint(results.getInt("ID"), vector, results.getFloat("speed"), index);
+                ++index;
+                path.addWaypoint(waypoint);
+            }
+            return path;
+        } catch (Exception e) {
+            return null;
         }
     }
 
