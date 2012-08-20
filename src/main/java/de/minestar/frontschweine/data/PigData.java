@@ -59,14 +59,11 @@ public class PigData {
         return this.pig.getUniqueId();
     }
 
-    public void start() {
-        this.setWaypoint(0);
-    }
-
     public void setWaypoint(int index) {
         if (index < 0 || index > (this.path.getSize() - 1)) {
             return;
         }
+
         this.currentWaypointIndex = index;
         this.currentWaypoint = this.path.getWaypoint(this.currentWaypointIndex);
         this.refreshPath();
@@ -170,7 +167,8 @@ public class PigData {
             }
         } else {
             // BACKWARD
-            if (this.currentWaypointIndex - 1 == 0) {
+
+            if (this.currentWaypointIndex - 1 < 0) {
                 if (!isLoop) {
                     // reached the final waypoint
                     if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
