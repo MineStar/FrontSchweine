@@ -22,11 +22,17 @@ import java.io.File;
 
 import org.bukkit.plugin.PluginManager;
 
+import de.minestar.frontschweine.commands.FrontschweinCommand;
+import de.minestar.frontschweine.commands.LineAddCommand;
+import de.minestar.frontschweine.commands.LineListCommand;
+import de.minestar.frontschweine.commands.LineRemoveCommand;
 import de.minestar.frontschweine.handler.DatabaseHandler;
 import de.minestar.frontschweine.handler.LineHandler;
 import de.minestar.frontschweine.handler.PigHandler;
+import de.minestar.frontschweine.handler.PlayerHandler;
 import de.minestar.frontschweine.listener.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
+import de.minestar.minestarlibrary.commands.CommandList;
 
 public class FrontschweineCore extends AbstractCore {
 
@@ -34,9 +40,11 @@ public class FrontschweineCore extends AbstractCore {
     public static final String NAME = "Frontschweine";
 
     public static ActionListener actionListener;
+
+    public static DatabaseHandler databaseHandler;
+    public static PlayerHandler playerHandler;
     public static LineHandler lineHandler;
     public static PigHandler pigHandler;
-    public static DatabaseHandler databaseHandler;
 
     public FrontschweineCore() {
         super(NAME);
@@ -47,6 +55,7 @@ public class FrontschweineCore extends AbstractCore {
     protected boolean createManager() {
         pigHandler = new PigHandler();
         lineHandler = new LineHandler();
+        playerHandler = new PlayerHandler();
         databaseHandler = new DatabaseHandler(FrontschweineCore.NAME, new File(this.getDataFolder(), "mysql.properties"));
 
         // INIT : LineHandler
@@ -63,6 +72,28 @@ public class FrontschweineCore extends AbstractCore {
     @Override
     protected boolean registerEvents(PluginManager pm) {
         pm.registerEvents(actionListener, this);
+        return true;
+    }
+
+    @Override
+    protected boolean commonDisable() {
+        if (databaseHandler.hasConnection()) {
+            databaseHandler.closeConnection();
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean createCommands() {
+        //@formatter:off;
+        this.cmdList = new CommandList(
+                new FrontschweinCommand    ("/fs", "", "",
+                            new LineAddCommand      ("addLine",     "<NAME>",   "frontschweine.admin"),
+                            new LineRemoveCommand   ("deleteLine",  "<NAME>",   "frontschweine.admin"),
+                            new LineListCommand     ("listLines",   "",         "frontschweine.admin")
+                          )
+         );
+        // @formatter: on;
         return true;
     }
 }

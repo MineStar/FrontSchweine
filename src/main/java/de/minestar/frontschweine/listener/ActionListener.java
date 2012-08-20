@@ -38,6 +38,7 @@ import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.Activator;
 import de.minestar.frontschweine.data.BlockVector;
 import de.minestar.frontschweine.data.PigData;
+import de.minestar.frontschweine.data.PlayerState;
 import de.minestar.frontschweine.handler.PigHandler;
 
 public class ActionListener implements Listener {
@@ -145,6 +146,23 @@ public class ActionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
+        final PlayerState state = FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).getState();
+        switch (state) {
+            case ACTIVATOR_ADD : {
+                break;
+            }
+            case ACTIVATOR_REMOVE : {
+                break;
+            }
+            default : {
+                this.handleNormalInteract(event);
+                break;
+            }
+        }
+
+    }
+
+    private void handleNormalInteract(PlayerInteractEvent event) {
         if (!event.getPlayer().isInsideVehicle() && !this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
             this.vector.update(event.getClickedBlock().getLocation());
             Activator activator = FrontschweineCore.lineHandler.getActivator(vector);

@@ -20,6 +20,7 @@ package de.minestar.frontschweine.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.Activator;
@@ -31,7 +32,7 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 public class LineHandler {
 
     private HashMap<Integer, Line> linesByID = new HashMap<Integer, Line>();
-    private HashMap<String, Line> linesByName = new HashMap<String, Line>();
+    private TreeMap<String, Line> linesByName = new TreeMap<String, Line>();
 
     private HashMap<BlockVector, Activator> activators = new HashMap<BlockVector, Activator>();
 
@@ -115,6 +116,10 @@ public class LineHandler {
     // LINES
     //
     // ////////////////////////////////////////////////////////
+
+    public TreeMap<String, Line> getAllLines() {
+        return this.linesByName;
+    }
 
     public boolean hasLine(String name) {
         return this.linesByName.containsKey(name.toLowerCase());

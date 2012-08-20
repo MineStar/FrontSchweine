@@ -59,16 +59,16 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         // WAYPOINTS
         this.addWaypoint = con.prepareStatement("INSERT INTO `waypoints` (`lineID`, `x`, `y`, `z`, `world`, `speed`) VALUES (?, ?, ?, ?, ?, ?)");
         this.deleteWaypoint = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
-        this.loadWaypointsForLine = con.prepareStatement("SELECT `*` FROM `waypoints` WHERE lineID`=? ORDER BY `ID` ASC");
+        this.loadWaypointsForLine = con.prepareStatement("SELECT * FROM `waypoints` WHERE `lineID`=? ORDER BY `ID` ASC");
         this.deleteWaypointsForLine = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=?");
-        this.getWaypointAt = con.prepareStatement("SELECT `*` FROM `waypoints` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
+        this.getWaypointAt = con.prepareStatement("SELECT * FROM `waypoints` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
 
         // ACTIVATOR
         this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?, ?)");
         this.deleteActivator = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
-        this.loadActivatorsForLine = con.prepareStatement("SELECT `*` FROM `activator` WHERE `lineID`=? ORDER BY `ID` ASC");
+        this.loadActivatorsForLine = con.prepareStatement("SELECT * FROM `activator` WHERE `lineID`=? ORDER BY `ID` ASC");
         this.deleteActivatorsForLine = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=?");
-        this.getActivatorAtPosition = con.prepareStatement("SELECT `*` FROM `activator` WHERE `x`=? AND `y`=? AND `z`=? AND `world`=?");
+        this.getActivatorAtPosition = con.prepareStatement("SELECT * FROM `activator` WHERE `x`=? AND `y`=? AND `z`=? AND `world`=?");
     }
 
     // ////////////////////////////////////////////////////
@@ -84,6 +84,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.addLine.executeUpdate();
             return this.getLineByName(name);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -98,6 +99,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return null;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -112,6 +114,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return false;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -142,6 +145,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return list;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -165,6 +169,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.addWaypoint.executeUpdate();
             return this.getWaypointAt(line, vector);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -184,6 +189,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return null;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -199,13 +205,14 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.deleteWaypoint.executeUpdate();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     private Path loadWaypointsForLine(int lineID) {
         try {
-            // SELECT `*` FROM `waypoints` WHERE lineID`=? ORDER BY `ID` ASC
+            // SELECT `*` FROM `waypoints` WHERE `lineID`=? ORDER BY `ID` ASC
             Path path = new Path();
             this.loadWaypointsForLine.setInt(1, lineID);
             ResultSet results = this.loadWaypointsForLine.executeQuery();
@@ -221,6 +228,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return path;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -232,6 +240,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.deleteWaypointsForLine.executeUpdate();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -255,6 +264,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.addActivator.executeUpdate();
             return this.getActivatorAt(vector, line, waypoint);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -273,6 +283,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return null;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -289,6 +300,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.deleteActivator.executeUpdate();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -300,6 +312,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.deleteActivatorsForLine.executeUpdate();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -324,6 +337,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             }
             return list;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
