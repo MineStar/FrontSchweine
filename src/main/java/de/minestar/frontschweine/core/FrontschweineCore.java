@@ -28,6 +28,7 @@ import de.minestar.frontschweine.commands.FrontschweinCommand;
 import de.minestar.frontschweine.commands.LineAddCommand;
 import de.minestar.frontschweine.commands.LineListCommand;
 import de.minestar.frontschweine.commands.LineRemoveCommand;
+import de.minestar.frontschweine.commands.SetPigVectorCommand;
 import de.minestar.frontschweine.commands.WaypointAddCommand;
 import de.minestar.frontschweine.commands.WaypointRemoveCommand;
 import de.minestar.frontschweine.commands.WaypointTeleportCommand;
@@ -94,6 +95,9 @@ public class FrontschweineCore extends AbstractCore {
         //@formatter:off;
         this.cmdList = new CommandList(
                 new FrontschweinCommand    ("/fs", "", "",
+                        
+                            // CONFIG
+                            new SetPigVectorCommand ("setPigVector",   "",      "frontschweine.admin"),
                         
                             // LINES
                             new LineAddCommand      ("addLine",     "<NAME>",   "frontschweine.admin"),

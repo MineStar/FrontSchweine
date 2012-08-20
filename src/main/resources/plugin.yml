@@ -1,6 +1,7 @@
 name: Frontschweine
 main: de.minestar.frontschweine.core.FrontschweineCore
 version: ${pom.version}
+softdepend: [GreenMile]
 depend: [MineStarLibrary]
 commands:
   fs:

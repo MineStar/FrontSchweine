@@ -18,11 +18,14 @@
 
 package de.minestar.frontschweine.listener;
 
+import java.util.Collection;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -39,6 +42,7 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import com.bukkit.gemo.utils.BlockUtils;
 
+import de.minestar.frontschweine.core.Config;
 import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.Activator;
 import de.minestar.frontschweine.data.BlockVector;
@@ -239,6 +243,20 @@ public class ActionListener implements Listener {
         FrontschweineCore.playerHandler.setState(event.getPlayer().getName(), PlayerState.NORMAL);
     }
 
+    private CraftPig getFreePig() {
+        if (Config.PIG_VECTOR == null) {
+            return null;
+        }
+
+        Collection<Pig> pigList = Config.PIG_VECTOR.getLocation().getWorld().getEntitiesByClass(Pig.class);
+        for (Pig pig : pigList) {
+            if (Config.PIG_VECTOR.getLocation().distance(pig.getLocation()) < Config.CHECK_RADIUS) {
+                return (CraftPig) pig;
+            }
+        }
+        return null;
+    }
+
     private void handleNormalInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock().getTypeId() != Material.STONE_BUTTON.getId()) {
             return;
@@ -250,16 +268,20 @@ public class ActionListener implements Listener {
             if (activator != null) {
                 Line line = FrontschweineCore.lineHandler.getLine(activator.getLineID());
                 if (line != null) {
-                    CraftPig pig = (CraftPig) event.getPlayer().getWorld().spawnEntity(activator.getWaypoint().getLocation(), EntityType.PIG);
-                    event.getPlayer().teleport(pig);
-                    pig.setSaddle(true);
-                    pig.setPassenger(event.getPlayer());
-                    PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath());
-                    pigHandler.addPigData(pigData);
-                    pigData.setWaypoint(activator.getWaypoint().getPlaceInLine());
-                    pigData.update(event.getPlayer().getLocation());
-
-                    PlayerUtils.sendMessage(event.getPlayer(), ChatColor.AQUA, "Herzlich willkommen auf der Linie " + ChatColor.RED + "'" + line.getName() + "'" + ChatColor.AQUA + "!");
+                    CraftPig pig = this.getFreePig();
+                    if (pig != null) {
+                        pig.teleport(activator.getWaypoint().getLocation());
+                        event.getPlayer().teleport(pig);
+                        pig.setSaddle(true);
+                        pig.setPassenger(event.getPlayer());
+                        PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath());
+                        pigHandler.addPigData(pigData);
+                        pigData.setWaypoint(activator.getWaypoint().getPlaceInLine());
+                        pigData.update(event.getPlayer().getLocation());
+                        PlayerUtils.sendMessage(event.getPlayer(), ChatColor.AQUA, "Herzlich willkommen auf der Linie " + ChatColor.RED + "'" + line.getName() + "'" + ChatColor.AQUA + "!");
+                    } else {
+                        PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Tut uns leid. Leider gerade kein Schwein für Sie Zeit. :{");
+                    }
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Die Linie konnte nicht gefunden werden!");
                 }

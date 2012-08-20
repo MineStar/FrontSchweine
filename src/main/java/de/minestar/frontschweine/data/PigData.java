@@ -30,6 +30,7 @@ import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import de.minestar.frontschweine.core.Config;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 
 public class PigData {
@@ -153,6 +154,9 @@ public class PigData {
             this.pig.eject();
         }
         this.pig.setSaddle(false);
+
+        // teleport the pig back
+        this.pig.teleport(Config.PIG_VECTOR.getLocation());
 
         // clean up
         this.cleanUp();
