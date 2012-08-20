@@ -163,6 +163,11 @@ public class PigData {
         // teleport the pig back
         this.pig.teleport(Config.PIG_VECTOR.getLocation());
 
+        PathEntity pathEntity = ((CraftWorld) this.pig.getWorld()).getHandle().a(this.pig.getHandle(), pig.getLocation().getBlockX(), pig.getLocation().getBlockY(), pig.getLocation().getBlockZ(), 5, false, false, false, true);
+
+        // set the path & speed
+        this.pig.getHandle().getNavigation().a(pathEntity, 0.2f);
+
         // clean up
         this.cleanUp();
     }
