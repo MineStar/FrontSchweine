@@ -47,6 +47,14 @@ public class Waypoint implements Comparable<Waypoint> {
     }
 
     /**
+     * Set the place in line
+     * 
+     */
+    public void setPlaceInLine(int placeInLine) {
+        this.placeInLine = placeInLine;
+    }
+
+    /**
      * Get the Location
      * 
      * @return the location

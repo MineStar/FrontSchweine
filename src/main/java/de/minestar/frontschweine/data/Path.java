@@ -63,23 +63,43 @@ public class Path {
     }
 
     public void removeWaypoints(ArrayList<Waypoint> waypoints) {
-        for (Waypoint vector : waypoints) {
-            this.removeWaypoint(vector);
+        for (Waypoint waypoint : waypoints) {
+            this.removeWaypoint(waypoint);
         }
     }
 
     public void removeWaypoints(Waypoint... waypoints) {
-        for (Waypoint vector : waypoints) {
-            this.removeWaypoint(vector);
+        for (Waypoint waypoint : waypoints) {
+            this.removeWaypoint(waypoint);
+        }
+    }
+    public void removeWaypoint(BlockVector vector) {
+        Waypoint waypoint = null;
+        for (Waypoint wp : waypoints) {
+            if (wp.getVector().equals(vector)) {
+                waypoint = wp;
+                break;
+            }
+        }
+        if (waypoint != null) {
+            this.removeWaypoint(waypoint);
         }
     }
 
     public void removeWaypoint(Waypoint waypoint) {
+        boolean found = false;
+        int deleteIndex = -1;
         for (int index = 0; index < this.waypoints.size(); index++) {
-            if (waypoint.equals(this.waypoints.get(index))) {
-                this.waypoints.remove(index);
-                return;
+            if (found) {
+                this.waypoints.get(index).setPlaceInLine(this.waypoints.get(index).getPlaceInLine() - 1);
+            } else if (waypoint.equals(this.waypoints.get(index))) {
+                deleteIndex = index;
+                found = true;
             }
+        }
+
+        if (found) {
+            this.waypoints.remove(deleteIndex);
         }
     }
 }

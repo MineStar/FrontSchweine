@@ -24,9 +24,9 @@ public class Activator {
     private final Waypoint waypoint;
     private final BlockVector vector;
 
-    public Activator(int ID, int lineID, Waypoint waypoint, BlockVector vector) {
+    public Activator(int ID, BlockVector vector, Line line, Waypoint waypoint) {
         this.ID = ID;
-        this.lineID = lineID;
+        this.lineID = line.getLineID();
         this.waypoint = waypoint;
         this.vector = vector;
     }

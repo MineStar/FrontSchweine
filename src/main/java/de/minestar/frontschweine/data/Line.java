@@ -51,6 +51,10 @@ public class Line {
         return this.activators.get(vector);
     }
 
+    public HashMap<BlockVector, Activator> getActivators() {
+        return activators;
+    }
+
     public void addActivator(Activator activator) {
         this.activators.put(activator.getVector(), activator);
     }
@@ -61,6 +65,10 @@ public class Line {
 
     public boolean hasActivator(BlockVector vector) {
         return this.activators.containsKey(vector);
+    }
+
+    public void removeActivator(BlockVector vector) {
+        this.activators.remove(vector);
     }
 
     public void setActivators(HashMap<BlockVector, Activator> activators) {
@@ -115,5 +123,9 @@ public class Line {
 
     public void removeWaypoint(Waypoint waypoint) {
         this.path.removeWaypoint(waypoint);
+    }
+
+    public void removeWaypoint(BlockVector vector) {
+        this.path.removeWaypoint(vector);
     }
 }

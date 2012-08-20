@@ -23,6 +23,7 @@ import java.io.File;
 import org.bukkit.plugin.PluginManager;
 
 import de.minestar.frontschweine.handler.DatabaseHandler;
+import de.minestar.frontschweine.handler.LineHandler;
 import de.minestar.frontschweine.handler.PigHandler;
 import de.minestar.frontschweine.listener.ActionListener;
 import de.minestar.minestarlibrary.AbstractCore;
@@ -33,6 +34,7 @@ public class FrontschweineCore extends AbstractCore {
     public static final String NAME = "Frontschweine";
 
     public static ActionListener actionListener;
+    public static LineHandler lineHandler;
     public static PigHandler pigHandler;
     public static DatabaseHandler databaseHandler;
 
@@ -44,7 +46,11 @@ public class FrontschweineCore extends AbstractCore {
     @Override
     protected boolean createManager() {
         pigHandler = new PigHandler();
+        lineHandler = new LineHandler();
         databaseHandler = new DatabaseHandler(FrontschweineCore.NAME, new File(this.getDataFolder(), "mysql.properties"));
+
+        // INIT : LineHandler
+        lineHandler.init();
         return true;
     }
 
