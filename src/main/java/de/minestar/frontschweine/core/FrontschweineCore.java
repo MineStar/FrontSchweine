@@ -62,7 +62,7 @@ public class FrontschweineCore extends AbstractCore {
         pigHandler = new PigHandler();
         lineHandler = new LineHandler();
         playerHandler = new PlayerHandler();
-        databaseHandler = new DatabaseHandler(FrontschweineCore.NAME, new File(this.getDataFolder(), "mysql.properties"));
+        databaseHandler = new DatabaseHandler(FrontschweineCore.NAME, new File(this.getDataFolder(), "mysql.yml"));
 
         // INIT : LineHandler
         lineHandler.init();
