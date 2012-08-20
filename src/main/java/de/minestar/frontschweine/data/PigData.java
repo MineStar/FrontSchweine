@@ -40,10 +40,12 @@ public class PigData {
     private int currentWaypointIndex;
     private Waypoint currentWaypoint;
     private Path path;
+    private boolean isLoop;
 
-    public PigData(String playerName, CraftPig pig, Path path) {
+    public PigData(String playerName, CraftPig pig, Path path, boolean isLoop) {
         this.playerName = playerName;
         this.pig = pig;
+        this.isLoop = isLoop;
         this.setPath(path);
     }
 
@@ -135,7 +137,7 @@ public class PigData {
     }
 
     private void onWaypointReached() {
-        if (this.currentWaypointIndex + 1 == this.path.getSize()) {
+        if (this.currentWaypointIndex + 1 == this.path.getSize() && !isLoop) {
             // reached the final waypoint
             if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
                 PlayerUtils.sendMessage((Player) this.pig.getPassenger(), ChatColor.AQUA, "Die " + ChatColor.RED + "UVB" + ChatColor.AQUA + " bedanken sich für diesen schweinischen Ritt!");
@@ -146,7 +148,6 @@ public class PigData {
             this.setWaypoint(this.currentWaypointIndex + 1);
         }
     }
-
     public void exit(boolean ejectPlayer) {
         // eject the player and remove the pig
         if (ejectPlayer && this.pig.getPassenger() != null) {

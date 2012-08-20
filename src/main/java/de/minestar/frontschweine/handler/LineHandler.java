@@ -138,13 +138,13 @@ public class LineHandler {
         return this.linesByID.get(ID);
     }
 
-    public boolean addLine(String name) {
+    public boolean addLine(String name, boolean isLoop) {
         if (this.hasLine(name)) {
             return false;
         }
 
         // save line to DB
-        Line line = FrontschweineCore.databaseHandler.addLine(name);
+        Line line = FrontschweineCore.databaseHandler.addLine(name, isLoop);
         if (line == null) {
             return false;
         }

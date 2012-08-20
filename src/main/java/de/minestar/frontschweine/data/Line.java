@@ -25,12 +25,14 @@ public class Line {
 
     private final int lineID;
     private final String name;
+    private final boolean isLoop;
     private HashMap<BlockVector, Activator> activators = new HashMap<BlockVector, Activator>();
     private Path path = new Path();
 
-    public Line(int lineID, String name) {
+    public Line(int lineID, String name, boolean isLoop) {
         this.lineID = lineID;
         this.name = name;
+        this.isLoop = isLoop;
     }
 
     public int getLineID() {
@@ -39,6 +41,10 @@ public class Line {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isLoop() {
+        return isLoop;
     }
 
     // /////////////////////////////////////////

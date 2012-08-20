@@ -53,7 +53,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
     @Override
     protected void createStatements(String pluginName, Connection con) throws Exception {
         // LINES
-        this.addLine = con.prepareStatement("INSERT INTO `lines` (`name`) VALUES (?)");
+        this.addLine = con.prepareStatement("INSERT INTO `lines` (`name`, `isLoop`) VALUES (?, ?)");
         this.deleteLine = con.prepareStatement("DELETE FROM `lines` WHERE `name`=?");
         this.loadLines = con.prepareStatement("SELECT * FROM `lines` ORDER BY `ID` ASC");
         this.getLineByName = con.prepareStatement("SELECT * FROM `lines` WHERE `name`=?");
@@ -80,10 +80,15 @@ public class DatabaseHandler extends AbstractMySQLHandler {
     //
     // ////////////////////////////////////////////////////
 
-    public Line addLine(String name) {
+    public Line addLine(String name, boolean isLoop) {
         try {
             // INSERT INTO `lines` (`name`) VALUES (?)
             this.addLine.setString(1, name);
+            int loop = 0;
+            if (isLoop) {
+                loop = 1;
+            }
+            this.addLine.setInt(2, loop);
             this.addLine.executeUpdate();
             return this.getLineByName(name);
         } catch (Exception e) {
@@ -98,7 +103,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.getLineByName.setString(1, name);
             ResultSet results = this.getLineByName.executeQuery();
             while (results != null && results.next()) {
-                return new Line(results.getInt("ID"), results.getString("name"));
+                return new Line(results.getInt("ID"), results.getString("name"), results.getInt("isLoop") == 1);
             }
             return null;
         } catch (Exception e) {
@@ -128,7 +133,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             ArrayList<Line> list = new ArrayList<Line>();
             ResultSet results = this.loadLines.executeQuery();
             while (results != null && results.next()) {
-                Line line = new Line(results.getInt("ID"), results.getString("name"));
+                Line line = new Line(results.getInt("ID"), results.getString("name"), results.getInt("isLoop") == 1);
                 // get waypoints
                 Path path = this.loadWaypointsForLine(line.getLineID());
                 if (path == null) {

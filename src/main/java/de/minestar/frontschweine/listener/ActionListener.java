@@ -285,7 +285,7 @@ public class ActionListener implements Listener {
                         event.getPlayer().teleport(pig);
                         pig.setSaddle(true);
                         pig.setPassenger(event.getPlayer());
-                        PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath());
+                        PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath(), line.isLoop());
                         pigHandler.addPigData(pigData);
                         pigData.setWaypoint(activator.getWaypoint().getPlaceInLine());
                         pigData.update(event.getPlayer().getLocation());

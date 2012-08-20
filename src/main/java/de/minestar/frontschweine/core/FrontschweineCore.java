@@ -103,7 +103,7 @@ public class FrontschweineCore extends AbstractCore {
                             new SetPigVectorCommand ("setPigVector",   "",      "frontschweine.admin"),
                         
                             // LINES
-                            new LineAddCommand      ("addLine",     "<NAME>",   "frontschweine.admin"),
+                            new LineAddCommand      ("addLine",     "<NAME> [FALSE | TRUE]",   "frontschweine.admin"),
                             new LineRemoveCommand   ("deleteLine",  "<NAME>",   "frontschweine.admin"),
                             new LineListCommand     ("listLines",   "",         "frontschweine.admin"),
                             

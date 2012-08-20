@@ -22,8 +22,13 @@ public class LineAddCommand extends AbstractCommand {
             return;
         }
 
+        boolean isLoop = false;
+        if (args[1].equalsIgnoreCase("true")) {
+            isLoop = true;
+        }
+
         // create line
-        if (FrontschweineCore.lineHandler.addLine(args[0])) {
+        if (FrontschweineCore.lineHandler.addLine(args[0], isLoop)) {
             PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Linie '" + args[0] + "' wurde hinzugefügt.");
             return;
         } else {
