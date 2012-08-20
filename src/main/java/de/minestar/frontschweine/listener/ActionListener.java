@@ -257,7 +257,7 @@ public class ActionListener implements Listener {
                     PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath());
                     pigData.setWaypoint(activator.getWaypoint().getPlaceInLine());
                     pigHandler.addPigData(pigData);
-                    PlayerUtils.sendMessage(event.getPlayer(), ChatColor.AQUA, "Herzlich Willkommen auf der Linie " + ChatColor.RED + "'" + line.getName() + "'!");
+                    PlayerUtils.sendMessage(event.getPlayer(), ChatColor.AQUA, "Herzlich Willkommen auf der Linie " + ChatColor.RED + "'" + line.getName() + "'" + ChatColor.AQUA + "!");
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Die Linie konnte nicht gefunden werden!");
                 }
