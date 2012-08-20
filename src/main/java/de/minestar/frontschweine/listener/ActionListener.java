@@ -18,7 +18,9 @@
 
 package de.minestar.frontschweine.listener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -246,9 +248,19 @@ public class ActionListener implements Listener {
             this.vector.update(event.getClickedBlock().getLocation());
             Activator activator = FrontschweineCore.lineHandler.getActivator(vector);
             if (activator != null) {
-                System.out.println("clicked on an activator for line " + FrontschweineCore.lineHandler.getLine(activator.getLineID()));
-            } else {
-                System.out.println("not an activator!");
+                Line line = FrontschweineCore.lineHandler.getLine(activator.getLineID());
+                if (line != null) {
+                    CraftPig pig = (CraftPig) event.getPlayer().getWorld().spawnEntity(activator.getWaypoint().getLocation(), EntityType.PIG);
+                    event.getPlayer().teleport(pig);
+                    pig.setSaddle(true);
+                    pig.setPassenger(event.getPlayer());
+                    PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath());
+                    pigData.setWaypoint(activator.getWaypoint().getPlaceInLine());
+                    pigHandler.addPigData(pigData);
+                    PlayerUtils.sendMessage(event.getPlayer(), ChatColor.AQUA, "Herzlich Willkommen auf der Linie " + ChatColor.RED + "'" + line.getName() + "'!");
+                } else {
+                    PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Die Linie konnte nicht gefunden werden!");
+                }
             }
         }
     }

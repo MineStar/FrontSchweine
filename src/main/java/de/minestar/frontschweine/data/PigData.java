@@ -23,9 +23,14 @@ import java.util.UUID;
 import net.minecraft.server.PathEntity;
 import net.minecraft.server.Vec3D;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPig;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+
+import de.minestar.minestarlibrary.utils.PlayerUtils;
 
 public class PigData {
     private final String playerName;
@@ -63,6 +68,18 @@ public class PigData {
         this.refreshPath();
     }
 
+    private float getLastWaypointSpeed() {
+        if (this.currentWaypointIndex > 1) {
+            return this.path.getWaypoint(this.currentWaypointIndex - 1).getSpeed();
+        } else {
+            if (this.path.getSize() > 0) {
+                return this.path.getWaypoint(0).getSpeed();
+            } else {
+                return 0.4f;
+            }
+        }
+    }
+
     public void update(Location location) {
         if (this.currentWaypoint == null) {
             this.exit(true);
@@ -80,7 +97,7 @@ public class PigData {
         }
 
         double distance = Math.abs(location.distance(this.currentWaypoint.getLocation()));
-        if (distance < 1.5d) {
+        if (distance < 2.5d) {
             this.onWaypointReached();
         }
     }
@@ -115,17 +132,17 @@ public class PigData {
         this.waypointVec3D = Vec3D.a(this.currentWaypoint.getX(), this.currentWaypoint.getY(), this.currentWaypoint.getZ());
 
         // set the path & speed
-        this.pig.getHandle().getNavigation().a(pathEntity, this.currentWaypoint.getSpeed());
+        this.pig.getHandle().getNavigation().a(pathEntity, this.getLastWaypointSpeed());
     }
 
     private void onWaypointReached() {
         if (this.currentWaypointIndex + 1 == this.path.getSize()) {
             // reached the final waypoint
-            System.out.println("final waypoint reached");
-            System.out.println("----------------------");
+            if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
+                PlayerUtils.sendMessage((Player) this.pig.getPassenger(), ChatColor.AQUA, "Die " + ChatColor.RED + "UVB" + ChatColor.AQUA + " bedanken sich für diesen schweinischen Ritt!");
+            }
             this.exit(true);
         } else {
-            System.out.println("waypoint " + (this.currentWaypointIndex + 1) + " of " + this.path.getSize() + " reached");
             // reached a normal waypoint
             this.setWaypoint(this.currentWaypointIndex + 1);
         }
