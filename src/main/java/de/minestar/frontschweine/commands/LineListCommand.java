@@ -24,7 +24,7 @@ public class LineListCommand extends AbstractCommand {
         PlayerUtils.sendInfo(player, "-----------------------------------------");
         int index = 1;
         for (Map.Entry<String, Line> entry : list.entrySet()) {
-            PlayerUtils.sendInfo(player, index + ". " + entry.getValue().getName() + " ( ID: " + entry.getValue().getLineID() + " )");
+            PlayerUtils.sendInfo(player, index + ". '" + entry.getValue().getName() + "'  -  ID: " + entry.getValue().getLineID() + "  -  Wegpunkte : " + entry.getValue().getPathSize());
             index++;
         }
         PlayerUtils.sendInfo(player, "-----------------------------------------");

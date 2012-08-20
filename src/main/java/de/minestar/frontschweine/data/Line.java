@@ -106,7 +106,7 @@ public class Line {
     }
 
     public void addWaypoint(Waypoint waypoint) {
-        this.addWaypoint(waypoint);
+        this.path.addWaypoint(waypoint);
     }
 
     public boolean hasWaypoint(Waypoint waypoint) {

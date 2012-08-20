@@ -205,15 +205,39 @@ public class LineHandler {
         return true;
     }
 
-    public boolean removeWaypoint(Line line, BlockVector vector) {
+    public boolean moveWaypoint(Line line, int index, BlockVector vector) {
         if (!this.hasLine(line.getName())) {
             return false;
         }
 
+        Waypoint waypoint = line.getWaypoint(index);
+        if (waypoint == null) {
+            return false;
+        }
+
+        // move waypoint in DB
+        if (FrontschweineCore.databaseHandler.moveWaypoint(line, waypoint.getVector(), vector)) {
+            waypoint.getVector().update(vector.getLocation());
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean removeWaypoint(Line line, int index) {
+        if (!this.hasLine(line.getName())) {
+            return false;
+        }
+
+        Waypoint waypoint = line.getWaypoint(index);
+        if (waypoint == null) {
+            return false;
+        }
+
         // delete waypoint from DB
-        if (FrontschweineCore.databaseHandler.deleteWaypoint(line, vector)) {
+        if (FrontschweineCore.databaseHandler.deleteWaypoint(line, waypoint.getVector())) {
             // delete waypoint from line
-            line.removeWaypoint(vector);
+            line.removeWaypoint(waypoint);
             return true;
         }
 
