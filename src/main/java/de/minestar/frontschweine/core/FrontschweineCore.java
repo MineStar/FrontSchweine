@@ -22,6 +22,8 @@ import java.io.File;
 
 import org.bukkit.plugin.PluginManager;
 
+import de.minestar.frontschweine.commands.ActivatorAddCommand;
+import de.minestar.frontschweine.commands.ActivatorRemoveCommand;
 import de.minestar.frontschweine.commands.FrontschweinCommand;
 import de.minestar.frontschweine.commands.LineAddCommand;
 import de.minestar.frontschweine.commands.LineListCommand;
@@ -102,7 +104,11 @@ public class FrontschweineCore extends AbstractCore {
                             new WaypointAddCommand      ("addWP",       "<LINIENNAME> [SPEED]",             "frontschweine.admin"),              
                             new WaypointRemoveCommand   ("deleteWP",    "<LINIENNAME> <INDEX>",             "frontschweine.admin"),
                             new WaypointUpdateCommand   ("updateWP",    "<LINIENNAME> <INDEX> [SPEED]",     "frontschweine.admin"),
-                            new WaypointTeleportCommand ("teleportWP",  "<LINIENNAME> <INDEX>",             "frontschweine.admin")
+                            new WaypointTeleportCommand ("teleportWP",  "<LINIENNAME> <INDEX>",             "frontschweine.admin"),
+                            
+                            // ACTIVATORS
+                            new ActivatorAddCommand      ("addActivator",       "<LINIENNAME> <INDEX>",     "frontschweine.admin"),              
+                            new ActivatorRemoveCommand   ("deleteActivator",    "",                         "frontschweine.admin")
                     )
          );
         // @formatter: on;

@@ -105,6 +105,7 @@ public class LineHandler {
         if (FrontschweineCore.databaseHandler.deleteActivator(line, vector)) {
             // delete activator from map
             line.removeActivator(vector);
+            this.activators.remove(vector);
             return true;
         }
 

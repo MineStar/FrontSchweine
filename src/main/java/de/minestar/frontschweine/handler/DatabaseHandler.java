@@ -25,6 +25,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Material;
+
 import de.minestar.frontschweine.data.Activator;
 import de.minestar.frontschweine.data.BlockVector;
 import de.minestar.frontschweine.data.Line;
@@ -353,10 +355,16 @@ public class DatabaseHandler extends AbstractMySQLHandler {
                 if (vector.getLocation() == null) {
                     continue;
                 }
+
                 Waypoint waypoint = this.getWaypointByID(waypoints, results.getInt("waypointID"));
                 if (waypoint == null) {
                     continue;
                 }
+
+                if (vector.getLocation().getBlock().getTypeId() != Material.STONE_BUTTON.getId()) {
+                    continue;
+                }
+
                 Activator activator = new Activator(results.getInt("ID"), vector, line, waypoint);
                 list.put(vector, activator);
             }

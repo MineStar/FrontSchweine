@@ -18,11 +18,14 @@
 
 package de.minestar.frontschweine.listener;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -37,9 +40,12 @@ import com.bukkit.gemo.utils.BlockUtils;
 import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.Activator;
 import de.minestar.frontschweine.data.BlockVector;
+import de.minestar.frontschweine.data.Line;
 import de.minestar.frontschweine.data.PigData;
 import de.minestar.frontschweine.data.PlayerState;
+import de.minestar.frontschweine.data.Waypoint;
 import de.minestar.frontschweine.handler.PigHandler;
+import de.minestar.minestarlibrary.utils.PlayerUtils;
 
 public class ActionListener implements Listener {
 
@@ -146,12 +152,18 @@ public class ActionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
         final PlayerState state = FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).getState();
         switch (state) {
             case ACTIVATOR_ADD : {
+                this.handleActivatorAdd(event);
                 break;
             }
             case ACTIVATOR_REMOVE : {
+                this.handleActivatorRemove(event);
                 break;
             }
             default : {
@@ -162,7 +174,74 @@ public class ActionListener implements Listener {
 
     }
 
+    private void handleActivatorAdd(PlayerInteractEvent event) {
+        // cancel the event
+        event.setCancelled(true);
+        event.setUseInteractedBlock(Event.Result.DENY);
+        event.setUseItemInHand(Event.Result.DENY);
+
+        if (event.getClickedBlock().getTypeId() == Material.STONE_BUTTON.getId()) {
+            this.vector.update(event.getClickedBlock().getLocation());
+            Activator activator = FrontschweineCore.lineHandler.getActivator(vector);
+
+            if (activator == null) {
+                Line line = FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).getLine();
+                Waypoint waypoint = FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).getWaypoint();
+                if (FrontschweineCore.lineHandler.addActivator(vector.clone(), line, waypoint)) {
+                    PlayerUtils.sendSuccess(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer gespeichert.");
+                } else {
+                    PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer konnte nicht gespeichert werden!");
+                }
+            } else {
+                PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Der Block ist bereits ein Aktivierer!");
+            }
+        } else {
+            PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer können nur Stone-Buttons sein!");
+        }
+
+        // update
+        FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).update(null, null);
+        FrontschweineCore.playerHandler.setState(event.getPlayer().getName(), PlayerState.NORMAL);
+    }
+
+    private void handleActivatorRemove(PlayerInteractEvent event) {
+        // cancel the event
+        event.setCancelled(true);
+        event.setUseInteractedBlock(Event.Result.DENY);
+        event.setUseItemInHand(Event.Result.DENY);
+
+        if (event.getClickedBlock().getTypeId() == Material.STONE_BUTTON.getId()) {
+            this.vector.update(event.getClickedBlock().getLocation());
+            Activator activator = FrontschweineCore.lineHandler.getActivator(vector);
+
+            if (activator != null) {
+                Line line = FrontschweineCore.lineHandler.getLine(activator.getLineID());
+                if (line != null) {
+                    if (FrontschweineCore.lineHandler.removeActivator(vector, line, activator.getWaypoint())) {
+                        PlayerUtils.sendSuccess(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer entfernt.");
+                    } else {
+                        PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer konnte nicht gelöscht werden!");
+                    }
+                } else {
+                    PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Linie nicht gefunden!");
+                }
+            } else {
+                PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Der Block ist kein Aktivierer!");
+            }
+        } else {
+            PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Der Block ist kein Aktivierer!");
+        }
+
+        // update
+        FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).update(null, null);
+        FrontschweineCore.playerHandler.setState(event.getPlayer().getName(), PlayerState.NORMAL);
+    }
+
     private void handleNormalInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock().getTypeId() != Material.STONE_BUTTON.getId()) {
+            return;
+        }
+
         if (!event.getPlayer().isInsideVehicle() && !this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
             this.vector.update(event.getClickedBlock().getLocation());
             Activator activator = FrontschweineCore.lineHandler.getActivator(vector);
