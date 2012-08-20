@@ -73,13 +73,25 @@ public class PigData {
     }
 
     private float getLastWaypointSpeed() {
-        if (this.currentWaypointIndex > 1) {
-            return this.path.getWaypoint(this.currentWaypointIndex - 1).getSpeed();
-        } else {
-            if (this.path.getSize() > 0) {
-                return this.path.getWaypoint(0).getSpeed();
+        if (!this.isBackwards) {
+            if (this.currentWaypointIndex > 1) {
+                return this.path.getWaypoint(this.currentWaypointIndex - 1).getSpeed();
             } else {
-                return 0.4f;
+                if (this.path.getSize() > 0) {
+                    return this.path.getWaypoint(0).getSpeed();
+                } else {
+                    return 0.4f;
+                }
+            }
+        } else {
+            if (this.currentWaypointIndex < this.path.getSize() - 1) {
+                return this.path.getWaypoint(this.currentWaypointIndex + 1).getSpeed();
+            } else {
+                if (this.path.getSize() > 0) {
+                    return this.path.getWaypoint(this.path.getSize() - 1).getSpeed();
+                } else {
+                    return 0.4f;
+                }
             }
         }
     }
