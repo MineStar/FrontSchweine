@@ -12,7 +12,7 @@ public class WaypointAddCommand extends AbstractExtendedCommand {
 
     public WaypointAddCommand(String syntax, String arguments, String node) {
         super(FrontschweineCore.NAME, syntax, arguments, node);
-        this.description = "Create a new line";
+        this.description = "Create a new waypoint";
     }
 
     public void execute(String[] args, Player player) {

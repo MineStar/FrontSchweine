@@ -82,6 +82,14 @@ public class Waypoint implements Comparable<Waypoint> {
     }
 
     /**
+     * Set the speed
+     * 
+     */
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    /**
      * @return the x
      */
     public int getX() {

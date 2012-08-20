@@ -205,7 +205,7 @@ public class LineHandler {
         return true;
     }
 
-    public boolean moveWaypoint(Line line, int index, BlockVector vector) {
+    public boolean updateWaypoint(Line line, int index, BlockVector vector, float speed) {
         if (!this.hasLine(line.getName())) {
             return false;
         }
@@ -216,8 +216,9 @@ public class LineHandler {
         }
 
         // move waypoint in DB
-        if (FrontschweineCore.databaseHandler.moveWaypoint(line, waypoint.getVector(), vector)) {
+        if (FrontschweineCore.databaseHandler.moveWaypoint(line, waypoint.getVector(), vector, speed)) {
             waypoint.getVector().update(vector.getLocation());
+            waypoint.setSpeed(speed);
             return true;
         }
 

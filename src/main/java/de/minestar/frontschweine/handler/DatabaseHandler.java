@@ -36,7 +36,7 @@ import de.minestar.minestarlibrary.database.DatabaseUtils;
 public class DatabaseHandler extends AbstractMySQLHandler {
 
     private PreparedStatement addLine, loadLines, deleteLine, getLineByName;
-    private PreparedStatement addWaypoint, loadWaypointsForLine, deleteWaypoint, deleteWaypointsForLine, getWaypointAt, moveWaypoint;
+    private PreparedStatement addWaypoint, loadWaypointsForLine, deleteWaypoint, deleteWaypointsForLine, getWaypointAt, updateWaypoint;
     private PreparedStatement addActivator, loadActivatorsForLine, deleteActivator, deleteActivatorsForLine, getActivatorAtPosition;
 
     public DatabaseHandler(String pluginName, File SQLConfigFile) {
@@ -62,7 +62,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         this.loadWaypointsForLine = con.prepareStatement("SELECT * FROM `waypoints` WHERE `lineID`=? ORDER BY `ID` ASC");
         this.deleteWaypointsForLine = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=?");
         this.getWaypointAt = con.prepareStatement("SELECT * FROM `waypoints` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
-        this.moveWaypoint = con.prepareStatement("UPDATE `waypoints` SET `x`=? , `y`=? , `z`=?, `world`=? WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
+        this.updateWaypoint = con.prepareStatement("UPDATE `waypoints` SET `x`=? , `y`=? , `z`=? , `world`=? , `speed`=? WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
 
         // ACTIVATOR
         this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?, ?)");
@@ -195,20 +195,22 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         }
     }
 
-    public boolean moveWaypoint(Line line, BlockVector oldVector, BlockVector newVector) {
+    public boolean moveWaypoint(Line line, BlockVector oldVector, BlockVector newVector, float speed) {
         try {
-            // UPDATE `waypoints` SET `x`=? , `y`=? , `z`=?, `world`=? WHERE
+            // UPDATE `waypoints` SET `x`=? , `y`=? , `z`=?, `world`=? ,
+            // `speed`=? WHERE
             // `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?
-            this.moveWaypoint.setInt(1, newVector.getX());
-            this.moveWaypoint.setInt(2, newVector.getY());
-            this.moveWaypoint.setInt(3, newVector.getZ());
-            this.moveWaypoint.setString(4, newVector.getWorldName());
-            this.moveWaypoint.setInt(5, line.getLineID());
-            this.moveWaypoint.setInt(6, oldVector.getX());
-            this.moveWaypoint.setInt(7, oldVector.getY());
-            this.moveWaypoint.setInt(8, oldVector.getZ());
-            this.moveWaypoint.setString(9, oldVector.getWorldName());
-            this.moveWaypoint.executeUpdate();
+            this.updateWaypoint.setInt(1, newVector.getX());
+            this.updateWaypoint.setInt(2, newVector.getY());
+            this.updateWaypoint.setInt(3, newVector.getZ());
+            this.updateWaypoint.setString(4, newVector.getWorldName());
+            this.updateWaypoint.setFloat(5, speed);
+            this.updateWaypoint.setInt(6, line.getLineID());
+            this.updateWaypoint.setInt(7, oldVector.getX());
+            this.updateWaypoint.setInt(8, oldVector.getY());
+            this.updateWaypoint.setInt(9, oldVector.getZ());
+            this.updateWaypoint.setString(10, oldVector.getWorldName());
+            this.updateWaypoint.executeUpdate();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

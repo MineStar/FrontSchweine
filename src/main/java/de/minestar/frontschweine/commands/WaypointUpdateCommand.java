@@ -5,14 +5,14 @@ import org.bukkit.entity.Player;
 import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.BlockVector;
 import de.minestar.frontschweine.data.Line;
-import de.minestar.minestarlibrary.commands.AbstractCommand;
+import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 
-public class WaypointMoveCommand extends AbstractCommand {
+public class WaypointUpdateCommand extends AbstractExtendedCommand {
 
-    public WaypointMoveCommand(String syntax, String arguments, String node) {
+    public WaypointUpdateCommand(String syntax, String arguments, String node) {
         super(FrontschweineCore.NAME, syntax, arguments, node);
-        this.description = "Create a new line";
+        this.description = "Update a waypoint";
     }
 
     public void execute(String[] args, Player player) {
@@ -23,7 +23,7 @@ public class WaypointMoveCommand extends AbstractCommand {
             return;
         }
 
-        // get speed
+        // get index
         int index = 0;
         try {
             index = Integer.valueOf(args[1]);
@@ -38,13 +38,24 @@ public class WaypointMoveCommand extends AbstractCommand {
             return;
         }
 
+        // get speed
+        float speed = line.getWaypoint(index - 1).getSpeed();
+        if (args.length > 2) {
+            try {
+                speed = Float.valueOf(args[2]);
+            } catch (Exception e) {
+                PlayerUtils.sendError(player, FrontschweineCore.NAME, "Die Geschwindigkeit muss eine Zahl sein (default: 0.4)!");
+                return;
+            }
+        }
+
         // move waypoint
         BlockVector vector = new BlockVector(player.getLocation());
-        if (FrontschweineCore.lineHandler.moveWaypoint(line, index - 1, vector)) {
-            PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Wegpunkt " + index + " wurde verschoben.");
+        if (FrontschweineCore.lineHandler.updateWaypoint(line, index - 1, vector, speed)) {
+            PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Wegpunkt " + index + " wurde aktualisiert.");
             return;
         } else {
-            PlayerUtils.sendError(player, FrontschweineCore.NAME, "Der Wegpunkt konnte nicht verschoben werden!");
+            PlayerUtils.sendError(player, FrontschweineCore.NAME, "Der Wegpunkt konnte nicht aktualisiert werden!");
             return;
         }
     }

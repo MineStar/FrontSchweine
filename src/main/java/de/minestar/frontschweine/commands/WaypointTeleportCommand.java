@@ -7,9 +7,9 @@ import de.minestar.frontschweine.data.Line;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 
-public class WaypointRemoveCommand extends AbstractCommand {
+public class WaypointTeleportCommand extends AbstractCommand {
 
-    public WaypointRemoveCommand(String syntax, String arguments, String node) {
+    public WaypointTeleportCommand(String syntax, String arguments, String node) {
         super(FrontschweineCore.NAME, syntax, arguments, node);
         this.description = "Remove a waypoint";
     }
@@ -37,13 +37,8 @@ public class WaypointRemoveCommand extends AbstractCommand {
             return;
         }
 
-        // delete waypoint
-        if (FrontschweineCore.lineHandler.removeWaypoint(line, index - 1)) {
-            PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Wegpunkt " + index + " wurde gelöscht.");
-            return;
-        } else {
-            PlayerUtils.sendError(player, FrontschweineCore.NAME, "Der Wegpunkt konnte nicht gelöscht werden!");
-            return;
-        }
+        // teleport player to waypoint
+        player.teleport(line.getWaypoint(index - 1).getLocation());
+        PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Du wurdest zu Wegpunkt " + index + " teleportiert.");
     }
 }

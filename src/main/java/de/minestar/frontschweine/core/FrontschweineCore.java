@@ -27,8 +27,9 @@ import de.minestar.frontschweine.commands.LineAddCommand;
 import de.minestar.frontschweine.commands.LineListCommand;
 import de.minestar.frontschweine.commands.LineRemoveCommand;
 import de.minestar.frontschweine.commands.WaypointAddCommand;
-import de.minestar.frontschweine.commands.WaypointMoveCommand;
 import de.minestar.frontschweine.commands.WaypointRemoveCommand;
+import de.minestar.frontschweine.commands.WaypointTeleportCommand;
+import de.minestar.frontschweine.commands.WaypointUpdateCommand;
 import de.minestar.frontschweine.handler.DatabaseHandler;
 import de.minestar.frontschweine.handler.LineHandler;
 import de.minestar.frontschweine.handler.PigHandler;
@@ -98,9 +99,10 @@ public class FrontschweineCore extends AbstractCore {
                             new LineListCommand     ("listLines",   "",         "frontschweine.admin"),
                             
                             // WAYPOINTS
-                            new WaypointAddCommand      ("addWP",       "<LINIENNAME> [SPEED]",      "frontschweine.admin"),              
-                            new WaypointRemoveCommand   ("deleteWP",    "<LINIENNAME> <INDEX>",      "frontschweine.admin"),
-                            new WaypointMoveCommand     ("moveWP",      "<LINIENNAME> <INDEX>",      "frontschweine.admin")
+                            new WaypointAddCommand      ("addWP",       "<LINIENNAME> [SPEED]",             "frontschweine.admin"),              
+                            new WaypointRemoveCommand   ("deleteWP",    "<LINIENNAME> <INDEX>",             "frontschweine.admin"),
+                            new WaypointUpdateCommand   ("updateWP",    "<LINIENNAME> <INDEX> [SPEED]",     "frontschweine.admin"),
+                            new WaypointTeleportCommand ("teleportWP",  "<LINIENNAME> <INDEX>",             "frontschweine.admin")
                     )
          );
         // @formatter: on;
