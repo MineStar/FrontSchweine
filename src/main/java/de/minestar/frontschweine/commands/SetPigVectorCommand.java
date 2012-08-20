@@ -2,9 +2,9 @@ package de.minestar.frontschweine.commands;
 
 import org.bukkit.entity.Player;
 
-import de.minestar.frontschweine.core.Config;
 import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.BlockVector;
+import de.minestar.frontschweine.data.Config;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 

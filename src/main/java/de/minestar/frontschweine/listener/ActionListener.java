@@ -20,7 +20,9 @@ package de.minestar.frontschweine.listener;
 
 import java.util.Collection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPig;
 import org.bukkit.entity.Entity;
@@ -42,13 +44,14 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import com.bukkit.gemo.utils.BlockUtils;
 
-import de.minestar.frontschweine.core.Config;
 import de.minestar.frontschweine.core.FrontschweineCore;
 import de.minestar.frontschweine.data.Activator;
 import de.minestar.frontschweine.data.BlockVector;
+import de.minestar.frontschweine.data.Config;
 import de.minestar.frontschweine.data.Line;
 import de.minestar.frontschweine.data.PigData;
 import de.minestar.frontschweine.data.PlayerState;
+import de.minestar.frontschweine.data.TeleportThread;
 import de.minestar.frontschweine.data.Waypoint;
 import de.minestar.frontschweine.handler.PigHandler;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
@@ -97,8 +100,14 @@ public class ActionListener implements Listener {
 
         // exit the pig and remove the pig
         this.pigHandler.removePig(pigData);
+
+        Location currentLocation = event.getVehicle().getLocation().clone();
         pigData.exit(false);
-        event.getVehicle().remove();
+        if (event.getVehicle().getPassenger() != null) {
+            // TP THE PLAYER
+            TeleportThread tpThread = new TeleportThread(((Player) event.getVehicle().getPassenger()).getName(), currentLocation);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(FrontschweineCore.INSTANCE, tpThread, 1);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

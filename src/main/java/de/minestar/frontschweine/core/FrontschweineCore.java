@@ -33,6 +33,7 @@ import de.minestar.frontschweine.commands.WaypointAddCommand;
 import de.minestar.frontschweine.commands.WaypointRemoveCommand;
 import de.minestar.frontschweine.commands.WaypointTeleportCommand;
 import de.minestar.frontschweine.commands.WaypointUpdateCommand;
+import de.minestar.frontschweine.data.Config;
 import de.minestar.frontschweine.handler.DatabaseHandler;
 import de.minestar.frontschweine.handler.LineHandler;
 import de.minestar.frontschweine.handler.PigHandler;
@@ -64,6 +65,8 @@ public class FrontschweineCore extends AbstractCore {
         lineHandler = new LineHandler();
         playerHandler = new PlayerHandler();
         databaseHandler = new DatabaseHandler(FrontschweineCore.NAME, new File(this.getDataFolder(), "mysql.yml"));
+
+        Config.load();
 
         // INIT : LineHandler
         lineHandler.init();
