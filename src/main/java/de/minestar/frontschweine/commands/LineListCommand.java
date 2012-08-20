@@ -14,17 +14,19 @@ public class LineListCommand extends AbstractCommand {
 
     public LineListCommand(String syntax, String arguments, String node) {
         super(FrontschweineCore.NAME, syntax, arguments, node);
-        this.description = "Create a new line";
+        this.description = "List all lines";
     }
 
     public void execute(String[] args, Player player) {
         TreeMap<String, Line> list = FrontschweineCore.lineHandler.getAllLines();
-        PlayerUtils.sendInfo(player, "---------------------------------------------");
+        PlayerUtils.sendInfo(player, "-----------------------------------------");
         PlayerUtils.sendInfo(player, FrontschweineCore.NAME, "Registrierte Linien:");
-        PlayerUtils.sendInfo(player, "---------------------------------------------");
+        PlayerUtils.sendInfo(player, "-----------------------------------------");
+        int index = 1;
         for (Map.Entry<String, Line> entry : list.entrySet()) {
-            PlayerUtils.sendInfo(player, entry.getValue().getName() + " ( ID: " + entry.getValue().getLineID() + " )");
+            PlayerUtils.sendInfo(player, index + ". " + entry.getValue().getName() + " ( ID: " + entry.getValue().getLineID() + " )");
+            index++;
         }
-        PlayerUtils.sendInfo(player, "---------------------------------------------");
+        PlayerUtils.sendInfo(player, "-----------------------------------------");
     }
 }
