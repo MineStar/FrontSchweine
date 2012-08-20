@@ -67,7 +67,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         this.updateWaypoint = con.prepareStatement("UPDATE `waypoints` SET `x`=? , `y`=? , `z`=? , `world`=? , `speed`=? WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
 
         // ACTIVATOR
-        this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`, `world`) VALUES (?, ?, ?, ?, ?, ?)");
+        this.addActivator = con.prepareStatement("INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`, `world`, `isBackwards`) VALUES (?, ?, ?, ?, ?, ?, ?)");
         this.deleteActivator = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
         this.loadActivatorsForLine = con.prepareStatement("SELECT * FROM `activator` WHERE `lineID`=? ORDER BY `ID` ASC");
         this.deleteActivatorsForLine = con.prepareStatement("DELETE FROM `activator` WHERE `lineID`=?");
@@ -283,16 +283,21 @@ public class DatabaseHandler extends AbstractMySQLHandler {
     //
     // ////////////////////////////////////////////////////
 
-    public Activator createActivator(BlockVector vector, Line line, Waypoint waypoint) {
+    public Activator createActivator(BlockVector vector, Line line, Waypoint waypoint, boolean isBackwards) {
         try {
             // INSERT INTO `activator` (`lineID`, `waypointID`, `x`, `y`, `z`,
-            // `world`) VALUES (?, ?, ?, ?, ?, ?)
+            // `world`, `isBackwards`) VALUES (?, ?, ?, ?, ?, ?, ?)
             this.addActivator.setInt(1, line.getLineID());
             this.addActivator.setInt(2, waypoint.getID());
             this.addActivator.setInt(3, vector.getX());
             this.addActivator.setInt(4, vector.getY());
             this.addActivator.setInt(5, vector.getZ());
             this.addActivator.setString(6, vector.getWorldName());
+            int back = 0;
+            if (isBackwards) {
+                back = 1;
+            }
+            this.addActivator.setInt(7, back);
             this.addActivator.executeUpdate();
             return this.getActivatorAt(vector, line, waypoint);
         } catch (Exception e) {
@@ -300,7 +305,6 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             return null;
         }
     }
-
     private Activator getActivatorAt(BlockVector vector, Line line, Waypoint waypoint) {
         try {
             // SELECT `*` FROM `activator` WHERE `x`=? AND `y`=? AND `z`=? AND
@@ -311,7 +315,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.getActivatorAtPosition.setString(4, vector.getWorldName());
             ResultSet results = this.getActivatorAtPosition.executeQuery();
             while (results != null && results.next()) {
-                return new Activator(results.getInt("ID"), vector, line, waypoint);
+                return new Activator(results.getInt("ID"), vector, line, waypoint, results.getInt("isBackwards") == 1);
             }
             return null;
         } catch (Exception e) {
@@ -370,7 +374,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
                     continue;
                 }
 
-                Activator activator = new Activator(results.getInt("ID"), vector, line, waypoint);
+                Activator activator = new Activator(results.getInt("ID"), vector, line, waypoint, results.getInt("isBackwards") == 1);
                 list.put(vector, activator);
             }
             return list;

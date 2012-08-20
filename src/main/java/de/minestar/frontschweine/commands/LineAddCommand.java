@@ -22,10 +22,7 @@ public class LineAddCommand extends AbstractCommand {
             return;
         }
 
-        boolean isLoop = false;
-        if (args[1].equalsIgnoreCase("true")) {
-            isLoop = true;
-        }
+        boolean isLoop = args[1].equalsIgnoreCase("true");
 
         // create line
         if (FrontschweineCore.lineHandler.addLine(args[0], isLoop)) {

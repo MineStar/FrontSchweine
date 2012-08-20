@@ -39,10 +39,12 @@ public class ActivatorAddCommand extends AbstractCommand {
             return;
         }
 
+        boolean backwards = args[2].equalsIgnoreCase("true");
+
         // get the waypoint
         Waypoint waypoint = line.getWaypoint(index - 1);
 
-        FrontschweineCore.playerHandler.getData(player.getName()).update(line, waypoint);
+        FrontschweineCore.playerHandler.getData(player.getName()).update(line, waypoint, backwards);
         FrontschweineCore.playerHandler.setState(player.getName(), PlayerState.ACTIVATOR_ADD);
         PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Klicke auf einen Stone-Button um einen Aktivierer zu erstellen.");
     }

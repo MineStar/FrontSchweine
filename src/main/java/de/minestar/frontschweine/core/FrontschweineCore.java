@@ -103,7 +103,7 @@ public class FrontschweineCore extends AbstractCore {
                             new SetPigVectorCommand ("setPigVector",   "",      "frontschweine.admin"),
                         
                             // LINES
-                            new LineAddCommand      ("addLine",     "<NAME> [FALSE | TRUE]",   "frontschweine.admin"),
+                            new LineAddCommand      ("addLine",     "<NAME> <FALSE | TRUE>",   "frontschweine.admin"),
                             new LineRemoveCommand   ("deleteLine",  "<NAME>",   "frontschweine.admin"),
                             new LineListCommand     ("listLines",   "",         "frontschweine.admin"),
                             
@@ -114,8 +114,8 @@ public class FrontschweineCore extends AbstractCore {
                             new WaypointTeleportCommand ("teleportWP",  "<LINIENNAME> <INDEX>",             "frontschweine.admin"),
                             
                             // ACTIVATORS
-                            new ActivatorAddCommand      ("addActivator",       "<LINIENNAME> <INDEX>",     "frontschweine.admin"),              
-                            new ActivatorRemoveCommand   ("deleteActivator",    "",                         "frontschweine.admin")
+                            new ActivatorAddCommand      ("addActivator",       "<LINIENNAME> <INDEX> <FALSE | TRUE>",  "frontschweine.admin"),              
+                            new ActivatorRemoveCommand   ("deleteActivator",    "",                                     "frontschweine.admin")
                     )
          );
         // @formatter: on;

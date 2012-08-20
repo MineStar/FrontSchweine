@@ -15,7 +15,7 @@ public class ActivatorRemoveCommand extends AbstractCommand {
     }
 
     public void execute(String[] args, Player player) {
-        FrontschweineCore.playerHandler.getData(player.getName()).update(null, null);
+        FrontschweineCore.playerHandler.getData(player.getName()).update(null, null, false);
         FrontschweineCore.playerHandler.setState(player.getName(), PlayerState.ACTIVATOR_REMOVE);
         PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Klicke auf einen Aktivierer um ihn zu entfernen.");
     }

@@ -71,7 +71,7 @@ public class LineHandler {
         return this.activators.get(vector);
     }
 
-    public boolean addActivator(BlockVector vector, Line line, Waypoint waypoint) {
+    public boolean addActivator(BlockVector vector, Line line, Waypoint waypoint, boolean isBackwards) {
         if (this.hasActivator(vector)) {
             return false;
         }
@@ -82,7 +82,7 @@ public class LineHandler {
 
         // create the activator
         BlockVector cloneVector = vector.clone();
-        Activator activator = FrontschweineCore.databaseHandler.createActivator(cloneVector, line, waypoint);
+        Activator activator = FrontschweineCore.databaseHandler.createActivator(cloneVector, line, waypoint, isBackwards);
         if (activator == null) {
             return false;
         }

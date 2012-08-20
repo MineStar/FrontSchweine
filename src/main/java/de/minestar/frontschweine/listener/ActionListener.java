@@ -202,7 +202,7 @@ public class ActionListener implements Listener {
             if (activator == null) {
                 Line line = FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).getLine();
                 Waypoint waypoint = FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).getWaypoint();
-                if (FrontschweineCore.lineHandler.addActivator(vector.clone(), line, waypoint)) {
+                if (FrontschweineCore.lineHandler.addActivator(vector.clone(), line, waypoint, FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).isBackwards())) {
                     PlayerUtils.sendSuccess(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer gespeichert.");
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Aktivierer konnte nicht gespeichert werden!");
@@ -215,7 +215,7 @@ public class ActionListener implements Listener {
         }
 
         // update
-        FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).update(null, null);
+        FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).update(null, null, false);
         FrontschweineCore.playerHandler.setState(event.getPlayer().getName(), PlayerState.NORMAL);
     }
 
@@ -248,7 +248,7 @@ public class ActionListener implements Listener {
         }
 
         // update
-        FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).update(null, null);
+        FrontschweineCore.playerHandler.getData(event.getPlayer().getName()).update(null, null, false);
         FrontschweineCore.playerHandler.setState(event.getPlayer().getName(), PlayerState.NORMAL);
     }
 
@@ -285,7 +285,7 @@ public class ActionListener implements Listener {
                         event.getPlayer().teleport(pig);
                         pig.setSaddle(true);
                         pig.setPassenger(event.getPlayer());
-                        PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath(), line.isLoop());
+                        PigData pigData = new PigData(event.getPlayer().getName(), pig, line.getPath(), line.isLoop(), activator.isBackwards());
                         pigHandler.addPigData(pigData);
                         pigData.setWaypoint(activator.getWaypoint().getPlaceInLine());
                         pigData.update(event.getPlayer().getLocation());

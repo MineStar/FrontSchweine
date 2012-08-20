@@ -23,12 +23,14 @@ public class Activator {
     private final int lineID;
     private final Waypoint waypoint;
     private final BlockVector vector;
+    private final boolean isBackwards;
 
-    public Activator(int ID, BlockVector vector, Line line, Waypoint waypoint) {
+    public Activator(int ID, BlockVector vector, Line line, Waypoint waypoint, boolean isBackwards) {
         this.ID = ID;
         this.lineID = line.getLineID();
         this.waypoint = waypoint;
         this.vector = vector;
+        this.isBackwards = isBackwards;
     }
 
     public int getID() {
@@ -45,5 +47,9 @@ public class Activator {
 
     public BlockVector getVector() {
         return vector;
+    }
+
+    public boolean isBackwards() {
+        return isBackwards;
     }
 }

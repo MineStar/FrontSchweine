@@ -5,15 +5,17 @@ public class PlayerData {
     private PlayerState state;
     private Line line = null;
     private Waypoint waypoint = null;
+    private boolean isBackwards = false;
 
     public PlayerData(String playerName) {
         this.name = playerName;
         this.state = PlayerState.NORMAL;
     }
 
-    public void update(Line line, Waypoint waypoint) {
+    public void update(Line line, Waypoint waypoint, boolean isBackwards) {
         this.line = line;
         this.waypoint = waypoint;
+        this.isBackwards = isBackwards;
     }
 
     public Waypoint getWaypoint() {
@@ -22,6 +24,10 @@ public class PlayerData {
 
     public Line getLine() {
         return line;
+    }
+
+    public boolean isBackwards() {
+        return isBackwards;
     }
 
     /**

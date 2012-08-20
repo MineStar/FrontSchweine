@@ -33,5 +33,6 @@ CREATE  TABLE IF NOT EXISTS `activator` (
   `y` INT NOT NULL ,
   `z` INT NOT NULL ,
   `world` TEXT NOT NULL ,
+  `isBackwards` INT NOT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
