@@ -137,12 +137,17 @@ public class PigData {
     }
 
     private void onWaypointReached() {
-        if (this.currentWaypointIndex + 1 == this.path.getSize() && !isLoop) {
-            // reached the final waypoint
-            if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
-                PlayerUtils.sendMessage((Player) this.pig.getPassenger(), ChatColor.AQUA, "Die " + ChatColor.RED + "UVB" + ChatColor.AQUA + " bedanken sich für diesen schweinischen Ritt!");
+        if (this.currentWaypointIndex + 1 == this.path.getSize()) {
+            if (!isLoop) {
+                // reached the final waypoint
+                if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
+                    PlayerUtils.sendMessage((Player) this.pig.getPassenger(), ChatColor.AQUA, "Die " + ChatColor.RED + "UVB" + ChatColor.AQUA + " bedanken sich für diesen schweinischen Ritt!");
+                }
+                this.exit(true);
+            } else {
+                // back to start
+                this.setWaypoint(0);
             }
-            this.exit(true);
         } else {
             // reached a normal waypoint
             this.setWaypoint(this.currentWaypointIndex + 1);

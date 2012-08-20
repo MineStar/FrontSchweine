@@ -259,7 +259,7 @@ public class ActionListener implements Listener {
 
         Collection<Pig> pigList = Config.PIG_VECTOR.getLocation().getWorld().getEntitiesByClass(Pig.class);
         for (Pig pig : pigList) {
-            if (!pig.hasSaddle() && pig.getPassenger() != null) {
+            if (!pig.hasSaddle() && pig.getPassenger() == null) {
                 if (Config.PIG_VECTOR.getLocation().distance(pig.getLocation()) < Config.CHECK_RADIUS) {
                     return (CraftPig) pig;
                 }
