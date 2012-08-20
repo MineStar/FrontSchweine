@@ -92,12 +92,11 @@ public class PigData {
          * current waypoint
          */
         if (!this.isSameGoal(this.pig.getHandle().getNavigation().d())) {
-            System.out.println("pig forgot the path => refreshing it");
             this.refreshPath();
         }
 
         double distance = Math.abs(location.distance(this.currentWaypoint.getLocation()));
-        if (distance < 2.5d) {
+        if (distance < 1.8d) {
             this.onWaypointReached();
         }
     }
