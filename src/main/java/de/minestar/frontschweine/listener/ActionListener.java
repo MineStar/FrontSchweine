@@ -272,7 +272,7 @@ public class ActionListener implements Listener {
     }
 
     private boolean handleRideInteract(PlayerInteractEvent event) {
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getPlayer().isInsideVehicle() && this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
+        if (event.getPlayer().isInsideVehicle() && this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
             PigData pigData = this.pigHandler.getPigDataByPlayer(event.getPlayer());
             if (pigData.isWaiting()) {
                 event.setCancelled(true);
