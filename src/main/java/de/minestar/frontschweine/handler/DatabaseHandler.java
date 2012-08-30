@@ -59,7 +59,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         this.getLineByName = con.prepareStatement("SELECT * FROM `lines` WHERE `name`=?");
 
         // WAYPOINTS
-        this.addWaypoint = con.prepareStatement("INSERT INTO `waypoints` (`lineID`, `x`, `y`, `z`, `world`, `speed`) VALUES (?, ?, ?, ?, ?, ?)");
+        this.addWaypoint = con.prepareStatement("INSERT INTO `waypoints` (`lineID`, `x`, `y`, `z`, `world`, `speed`, `isWaiting`) VALUES (?, ?, ?, ?, ?, ?, ?)");
         this.deleteWaypoint = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=? AND `x`=? AND `y`=? AND `z`=? AND `world`=?");
         this.loadWaypointsForLine = con.prepareStatement("SELECT * FROM `waypoints` WHERE `lineID`=? ORDER BY `ID` ASC");
         this.deleteWaypointsForLine = con.prepareStatement("DELETE FROM `waypoints` WHERE `lineID`=?");
@@ -164,7 +164,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
     //
     // ////////////////////////////////////////////////////
 
-    public Waypoint addWaypoint(Line line, BlockVector vector, float speed) {
+    public Waypoint addWaypoint(Line line, BlockVector vector, float speed, boolean isWaiting) {
         try {
             // INSERT INTO `waypoints` (`lineID`, `x`, `y`, `z`, `world`,
             // `speed`) VALUES (?, ?, ?, ?, ?, ?)
@@ -174,6 +174,11 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.addWaypoint.setInt(4, vector.getZ());
             this.addWaypoint.setString(5, vector.getWorldName());
             this.addWaypoint.setFloat(6, speed);
+            int wait = 0;
+            if (isWaiting) {
+                wait = 1;
+            }
+            this.addWaypoint.setInt(7, wait);
             this.addWaypoint.executeUpdate();
             return this.getWaypointAt(line, vector);
         } catch (Exception e) {
@@ -193,7 +198,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             this.getWaypointAt.setString(5, vector.getWorldName());
             ResultSet results = this.getWaypointAt.executeQuery();
             while (results != null && results.next()) {
-                return new Waypoint(results.getInt("ID"), vector, results.getFloat("speed"), line.getPathSize());
+                return new Waypoint(results.getInt("ID"), vector, results.getFloat("speed"), line.getPathSize(), results.getInt("isWaiting") == 1);
             }
             return null;
         } catch (Exception e) {
@@ -254,7 +259,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
                 if (vector.getLocation() == null) {
                     continue;
                 }
-                Waypoint waypoint = new Waypoint(results.getInt("ID"), vector, results.getFloat("speed"), index);
+                Waypoint waypoint = new Waypoint(results.getInt("ID"), vector, results.getFloat("speed"), index, results.getInt("isWaiting") == 1);
                 ++index;
                 path.addWaypoint(waypoint);
             }

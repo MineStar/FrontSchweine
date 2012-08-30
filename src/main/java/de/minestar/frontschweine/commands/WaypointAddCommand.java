@@ -34,9 +34,16 @@ public class WaypointAddCommand extends AbstractExtendedCommand {
             }
         }
 
+        boolean isWaiting = false;
+        if (args.length > 2) {
+            if (args[2].equalsIgnoreCase("WAIT")) {
+                isWaiting = true;
+            }
+        }
+
         // add waypoint
         BlockVector vector = new BlockVector(player.getLocation());
-        if (FrontschweineCore.lineHandler.addWaypoint(line, vector, speed)) {
+        if (FrontschweineCore.lineHandler.addWaypoint(line, vector, speed, isWaiting)) {
             PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Wegpunkt wurde hinzugefügt.");
             PlayerUtils.sendInfo(player, "Linie: " + line.getName());
             PlayerUtils.sendInfo(player, "Geschwindigkeit: " + speed);

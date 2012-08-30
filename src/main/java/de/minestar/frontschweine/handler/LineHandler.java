@@ -189,13 +189,13 @@ public class LineHandler {
     //
     // ////////////////////////////////////////////////////////
 
-    public boolean addWaypoint(Line line, BlockVector vector, float speed) {
+    public boolean addWaypoint(Line line, BlockVector vector, float speed, boolean isWaiting) {
         if (!this.hasLine(line.getName())) {
             return false;
         }
 
         // save waypoint to DB
-        Waypoint waypoint = FrontschweineCore.databaseHandler.addWaypoint(line, vector, speed);
+        Waypoint waypoint = FrontschweineCore.databaseHandler.addWaypoint(line, vector, speed, isWaiting);
         if (waypoint == null) {
             return false;
         }

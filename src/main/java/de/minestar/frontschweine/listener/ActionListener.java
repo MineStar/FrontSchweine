@@ -167,6 +167,10 @@ public class ActionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (this.handleRideInteract(event)) {
+            return;
+        }
+
         if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
@@ -186,7 +190,6 @@ public class ActionListener implements Listener {
                 break;
             }
         }
-
     }
 
     private void handleActivatorAdd(PlayerInteractEvent event) {
@@ -266,6 +269,18 @@ public class ActionListener implements Listener {
             }
         }
         return null;
+    }
+
+    private boolean handleRideInteract(PlayerInteractEvent event) {
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getPlayer().isInsideVehicle() && this.pigHandler.hasPigDataByPlayer(event.getPlayer())) {
+            PigData pigData = this.pigHandler.getPigDataByPlayer(event.getPlayer());
+            if (pigData.isWaiting()) {
+                event.setCancelled(true);
+                pigData.nextWaypoint();
+            }
+            return true;
+        }
+        return false;
     }
 
     private void handleNormalInteract(PlayerInteractEvent event) {

@@ -7,6 +7,7 @@ public class Waypoint implements Comparable<Waypoint> {
     private BlockVector vector;
     private float speed;
     private int placeInLine = 0;
+    private boolean isWaiting = false;
 
     /**
      * Constructor
@@ -20,11 +21,12 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            z
      */
-    public Waypoint(int ID, BlockVector vector, float speed, int placeInLine) {
+    public Waypoint(int ID, BlockVector vector, float speed, int placeInLine, boolean isWaiting) {
         this.ID = ID;
         this.vector = vector;
         this.speed = speed;
         this.placeInLine = placeInLine;
+        this.isWaiting = isWaiting;
     }
 
     /**
@@ -33,8 +35,8 @@ public class Waypoint implements Comparable<Waypoint> {
      * @param the
      *            location
      */
-    public Waypoint(int ID, Location location, float speed, int placeInLine) {
-        this(ID, new BlockVector(location), speed, placeInLine);
+    public Waypoint(int ID, Location location, float speed, int placeInLine, boolean isWaiting) {
+        this(ID, new BlockVector(location), speed, placeInLine, isWaiting);
     }
 
     /**
@@ -79,6 +81,10 @@ public class Waypoint implements Comparable<Waypoint> {
      */
     public float getSpeed() {
         return speed;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
     }
 
     /**

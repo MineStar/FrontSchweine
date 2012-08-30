@@ -19,6 +19,7 @@ CREATE  TABLE IF NOT EXISTS `waypoints` (
   `z` INT NOT NULL ,
   `world` TEXT NOT NULL ,
   `speed` FLOAT NOT NULL ,
+  `isWaiting` INT NOT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 

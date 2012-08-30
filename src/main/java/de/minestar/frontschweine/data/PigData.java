@@ -23,6 +23,7 @@ import java.util.UUID;
 import net.minecraft.server.PathEntity;
 import net.minecraft.server.Vec3D;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -42,6 +43,9 @@ public class PigData {
     private Path path;
     private boolean isLoop;
     private boolean isBackwards;
+
+    private boolean isWaiting = false;
+    private boolean messageSend = false;
 
     public PigData(String playerName, CraftPig pig, Path path, boolean isLoop, boolean isBackwards) {
         this.playerName = playerName;
@@ -67,6 +71,14 @@ public class PigData {
         this.currentWaypointIndex = index;
         this.currentWaypoint = this.path.getWaypoint(this.currentWaypointIndex);
         this.refreshPath();
+    }
+
+    public void setWaiting(boolean isWaiting) {
+        this.isWaiting = isWaiting;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
     }
 
     private float getLastWaypointSpeed() {
@@ -159,15 +171,38 @@ public class PigData {
                     this.exit(true);
                 } else {
                     // back to start
-                    this.setWaypoint(0);
+                    if (!this.currentWaypoint.isWaiting()) {
+                        this.setWaypoint(0);
+                        this.setWaiting(false);
+                        this.messageSend = false;
+                    } else {
+                        this.setWaypoint(this.currentWaypointIndex);
+                        Player player = Bukkit.getPlayer(this.playerName);
+                        if (player != null && player.isOnline() && !messageSend) {
+                            PlayerUtils.sendMessage(player, ChatColor.GRAY, "Wegpunkt erreicht. Interagiere um forzufahren.");
+                            messageSend = true;
+                        }
+                        this.setWaiting(true);
+                    }
                 }
             } else {
                 // reached a normal waypoint
-                this.setWaypoint(this.currentWaypointIndex + 1);
+                if (!this.currentWaypoint.isWaiting()) {
+                    this.setWaypoint(this.currentWaypointIndex + 1);
+                    this.setWaiting(false);
+                    this.messageSend = false;
+                } else {
+                    this.setWaypoint(this.currentWaypointIndex);
+                    Player player = Bukkit.getPlayer(this.playerName);
+                    if (player != null && player.isOnline() && !messageSend) {
+                        PlayerUtils.sendMessage(player, ChatColor.GRAY, "Wegpunkt erreicht. Interagiere um forzufahren.");
+                        messageSend = true;
+                    }
+                    this.setWaiting(true);
+                }
             }
         } else {
             // BACKWARD
-
             if (this.currentWaypointIndex - 1 < 0) {
                 if (!isLoop) {
                     // reached the final waypoint
@@ -177,15 +212,38 @@ public class PigData {
                     this.exit(true);
                 } else {
                     // back to start
-                    this.setWaypoint(this.path.getSize() - 1);
+                    if (!this.currentWaypoint.isWaiting()) {
+                        this.setWaypoint(this.path.getSize() - 1);
+                        this.setWaiting(false);
+                        this.messageSend = false;
+                    } else {
+                        this.setWaypoint(this.currentWaypointIndex);
+                        Player player = Bukkit.getPlayer(this.playerName);
+                        if (player != null && player.isOnline() && !messageSend) {
+                            PlayerUtils.sendMessage(player, ChatColor.GRAY, "Wegpunkt erreicht. Interagiere um forzufahren.");
+                            messageSend = true;
+                        }
+                        this.setWaiting(true);
+                    }
                 }
             } else {
                 // reached a normal waypoint
-                this.setWaypoint(this.currentWaypointIndex - 1);
+                if (!this.currentWaypoint.isWaiting()) {
+                    this.setWaypoint(this.currentWaypointIndex - 1);
+                    this.setWaiting(false);
+                    this.messageSend = false;
+                } else {
+                    this.setWaypoint(this.currentWaypointIndex);
+                    Player player = Bukkit.getPlayer(this.playerName);
+                    if (player != null && player.isOnline() && !messageSend) {
+                        PlayerUtils.sendMessage(player, ChatColor.GRAY, "Wegpunkt erreicht. Interagiere um forzufahren.");
+                        messageSend = true;
+                    }
+                    this.setWaiting(true);
+                }
             }
         }
     }
-
     public void exit(boolean ejectPlayer) {
         // eject the player and remove the pig
         if (ejectPlayer && this.pig.getPassenger() != null) {
@@ -203,5 +261,45 @@ public class PigData {
 
         // clean up
         this.cleanUp();
+    }
+
+    public void nextWaypoint() {
+        this.setWaiting(false);
+        this.messageSend = false;
+        if (!isBackwards) {
+            // FORWARD
+            if (this.currentWaypointIndex + 1 == this.path.getSize()) {
+                if (!isLoop) {
+                    // reached the final waypoint
+                    if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
+                        PlayerUtils.sendMessage((Player) this.pig.getPassenger(), ChatColor.AQUA, "Die " + ChatColor.RED + "UVB" + ChatColor.AQUA + " bedanken sich für diesen schweinischen Ritt!");
+                    }
+                    this.exit(true);
+                } else {
+                    // back to start
+                    this.setWaypoint(0);
+                }
+            } else {
+                // reached a normal waypoint
+                this.setWaypoint(this.currentWaypointIndex + 1);
+            }
+        } else {
+            // BACKWARD
+            if (this.currentWaypointIndex - 1 < 0) {
+                if (!isLoop) {
+                    // reached the final waypoint
+                    if (this.pig.getPassenger() != null && this.pig.getPassenger().getType() == EntityType.PLAYER) {
+                        PlayerUtils.sendMessage((Player) this.pig.getPassenger(), ChatColor.AQUA, "Die " + ChatColor.RED + "UVB" + ChatColor.AQUA + " bedanken sich für diesen schweinischen Ritt!");
+                    }
+                    this.exit(true);
+                } else {
+                    // back to start
+                    this.setWaypoint(this.path.getSize() - 1);
+                }
+            } else {
+                // reached a normal waypoint
+                this.setWaypoint(this.currentWaypointIndex - 1);
+            }
+        }
     }
 }
