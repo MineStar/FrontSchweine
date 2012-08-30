@@ -121,7 +121,7 @@ public class PigData {
         }
 
         double distance = Math.abs(location.distance(this.currentWaypoint.getLocation()));
-        if (distance < 1.8d) {
+        if (distance < 1d) {
             this.onWaypointReached();
         }
     }

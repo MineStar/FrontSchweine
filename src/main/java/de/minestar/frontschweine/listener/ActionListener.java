@@ -296,7 +296,8 @@ public class ActionListener implements Listener {
                 if (line != null) {
                     CraftPig pig = this.getFreePig();
                     if (pig != null) {
-                        pig.teleport(activator.getWaypoint().getLocation());
+                        pig.remove();
+                        pig = (CraftPig) activator.getWaypoint().getLocation().getWorld().spawnEntity(activator.getWaypoint().getLocation(), EntityType.PIG);
                         event.getPlayer().teleport(pig);
                         pig.setSaddle(true);
                         pig.setPassenger(event.getPlayer());
