@@ -35,6 +35,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -317,6 +318,24 @@ public class ActionListener implements Listener {
                     PlayerUtils.sendError(event.getPlayer(), FrontschweineCore.NAME, "Die Linie konnte nicht gefunden werden!");
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+        if (!event.getTarget().getType().equals(EntityType.PLAYER)) {
+            return;
+        }
+
+        // get the player
+        Player player = (Player) event.getTarget();
+        if (!player.isInsideVehicle()) {
+            return;
+        }
+
+        // cencel event, if the player is riding a pig
+        if (this.pigHandler.hasPigDataByPlayer(player)) {
+            event.setCancelled(true);
         }
     }
 }
