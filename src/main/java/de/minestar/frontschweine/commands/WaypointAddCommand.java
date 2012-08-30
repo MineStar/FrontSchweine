@@ -43,9 +43,6 @@ public class WaypointAddCommand extends AbstractExtendedCommand {
 
         // add waypoint
         BlockVector vector = new BlockVector(player.getLocation());
-        if (vector.getLocation().getBlock().getTypeId() == 44) {
-            vector = vector.getRelative(0, 1, 0);
-        }
         if (FrontschweineCore.lineHandler.addWaypoint(line, vector, speed, isWaiting)) {
             PlayerUtils.sendSuccess(player, FrontschweineCore.NAME, "Wegpunkt wurde hinzugefügt.");
             PlayerUtils.sendInfo(player, "Linie: " + line.getName());

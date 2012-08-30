@@ -277,6 +277,10 @@ public class ActionListener implements Listener {
             if (pigData.isWaiting()) {
                 event.setCancelled(true);
                 pigData.nextWaypoint();
+            } else {
+                if (Action.LEFT_CLICK_AIR.equals(event.getAction()) || Action.LEFT_CLICK_BLOCK.equals(event.getAction())) {
+                    pigData.refreshPath();
+                }
             }
             return true;
         }

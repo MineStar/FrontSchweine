@@ -144,7 +144,7 @@ public class PigData {
         this.pathEntity = null;
     }
 
-    private void refreshPath() {
+    public void refreshPath() {
         if (this.currentWaypoint == null) {
             this.exit(true);
         }
