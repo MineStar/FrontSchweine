@@ -105,6 +105,10 @@ public class PigData {
         }
     }
 
+    public int getCurrentWaypointIndex() {
+        return currentWaypointIndex;
+    }
+
     public void update(Location location) {
         if (this.currentWaypoint == null) {
             this.exit(true);
@@ -121,7 +125,7 @@ public class PigData {
         }
 
         double distance = Math.abs(location.distance(this.currentWaypoint.getLocation()));
-        if (distance < 1.2d) {
+        if (distance < 1.5d) {
             this.onWaypointReached();
         }
     }

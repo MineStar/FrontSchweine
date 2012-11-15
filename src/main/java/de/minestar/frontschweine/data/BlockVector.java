@@ -77,7 +77,7 @@ public class BlockVector implements Comparable<BlockVector> {
         if (this.location == null) {
             World world = Bukkit.getWorld(this.worldName);
             if (world != null) {
-                this.location = new Location(world, this.x, this.y, this.z);
+                this.location = new Location(world, this.x + 0.5d, this.y + 0.5d, this.z + 0.5d);
             }
         }
         return this.location;

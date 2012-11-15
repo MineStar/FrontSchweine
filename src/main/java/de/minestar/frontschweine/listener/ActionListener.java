@@ -280,8 +280,7 @@ public class ActionListener implements Listener {
                 pigData.nextWaypoint();
             } else {
                 if (Action.LEFT_CLICK_AIR.equals(event.getAction()) || Action.LEFT_CLICK_BLOCK.equals(event.getAction())) {
-                    pigData.refreshPath();
-                    pigData.update(event.getPlayer().getLocation());
+                    pigData.setWaypoint(pigData.getCurrentWaypointIndex());
                     event.setCancelled(true);
                 }
             }
