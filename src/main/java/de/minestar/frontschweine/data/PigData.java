@@ -20,14 +20,14 @@ package de.minestar.frontschweine.data;
 
 import java.util.UUID;
 
-import net.minecraft.server.PathEntity;
-import net.minecraft.server.Vec3D;
+import net.minecraft.server.v1_4_6.PathEntity;
+import net.minecraft.server.v1_4_6.Vec3D;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPig;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPig;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
